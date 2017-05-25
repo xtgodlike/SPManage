@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qy.sp.manage.dao.impl.PipleDao">
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TPiple">
+    <id column="PIPLE_ID" jdbcType="VARCHAR" property="pipleId" />
+    <result column="PIPLE_NAME" jdbcType="VARCHAR" property="pipleName" />
+    <result column="SUPPLIER_ID" jdbcType="VARCHAR" property="supplierId" />
+    <result column="OP_STATUS" jdbcType="INTEGER" property="opStatus" />
+    <result column="CONTRACT_ID" jdbcType="VARCHAR" property="contractId" />
+    <result column="PIPLE_URL_A" jdbcType="VARCHAR" property="pipleUrlA" />
+    <result column="PIPLE_URL_B" jdbcType="VARCHAR" property="pipleUrlB" />
+    <result column="NOTIFY_URL_A" jdbcType="VARCHAR" property="notifyUrlA" />
+    <result column="NOTIFY_URL_B" jdbcType="VARCHAR" property="notifyUrlB" />
+    <result column="CHANNEL_URL_A" jdbcType="VARCHAR" property="channelUrlA" />
+    <result column="CHANNEL_URL_B" jdbcType="VARCHAR" property="channelUrlB" />
+    <result column="PIPLE_DOC" jdbcType="VARCHAR" property="pipleDoc" />
+    <result column="CHANNEL_DOC" jdbcType="VARCHAR" property="channelDoc" />
+    <result column="PIPLE_AUTH_A" jdbcType="VARCHAR" property="pipleAuthA" />
+    <result column="PIPLE_AUTH_B" jdbcType="VARCHAR" property="pipleAuthB" />
+    <result column="PIPLE_AUTH_C" jdbcType="VARCHAR" property="pipleAuthC" />
+    <result column="PIPLE_AUTH_D" jdbcType="VARCHAR" property="pipleAuthD" />
+    <result column="SUPPLIER_NAME" jdbcType="VARCHAR" property="supplierName" />
+    <result column="PIPLE_DOC_NAME" jdbcType="VARCHAR" property="pipleDocName" />
+    <result column="CHANNEL_DOC_NAME" jdbcType="VARCHAR" property="channelDocName" />
+    <result column="HOST_ID" jdbcType="INTEGER" property="hostId" />
+    <result column="PLUGIN_ID" jdbcType="VARCHAR" property="pluginId" />
+    <result column="PLUGIN_VERSION" jdbcType="VARCHAR" property="pluginVersion" />
+    <result column="TEST_PLUGIN_ID" jdbcType="VARCHAR" property="testPluginId" />
+    <result column="CODE_TYPE" jdbcType="INTEGER" property="codeType" />
+    <result column="PIPLE_TYPE" jdbcType="INTEGER" property="pipleType" />
+    <result column="CALC_TYPE" jdbcType="INTEGER" property="calcType" />
+     <result column="PLUGIN_TYPE" jdbcType="INTEGER" property="pluginType" />
+    <result column="PIPLE_NUMBER" jdbcType="VARCHAR" property="pipleNumber" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="MOD_TIME" jdbcType="TIMESTAMP" property="modTime" />
+    <result column="SHOW_STATUS" jdbcType="INTEGER" property="showStatus" />
+    <result column="SETTLEMENT_RATIO" property="settlementRatio" jdbcType="DOUBLE" />
+    <result column="HOST_NAME" jdbcType="VARCHAR" property="hostName" />
+    <result column="PLUGIN_NAME" jdbcType="VARCHAR" property="pluginName" />
+    <result column="PIPLE_TYPE_DESC" jdbcType="VARCHAR" property="pipleTypeDesc" />
+    <result column="CALC_TYPE_DESC" jdbcType="VARCHAR" property="calcTypeDesc" />
+    <result column="CODE_TYPE_DESC" jdbcType="VARCHAR" property="codeTypeDesc" />
+    <result column="PLUGIN_TYPE_DESC" jdbcType="VARCHAR" property="pluginTypeDesc" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    PIPLE_ID, PIPLE_NAME, SUPPLIER_ID, OP_STATUS, CONTRACT_ID, PIPLE_URL_A, PIPLE_URL_B, 
+    NOTIFY_URL_A, NOTIFY_URL_B, CHANNEL_URL_A, CHANNEL_URL_B, PIPLE_DOC, CHANNEL_DOC, 
+    PIPLE_AUTH_A, PIPLE_AUTH_B, PIPLE_AUTH_C, PIPLE_AUTH_D, HOST_ID, CODE_TYPE, PIPLE_TYPE, 
+    CALC_TYPE,  PLUGIN_TYPE,PIPLE_NUMBER, CREATE_TIME, MOD_TIME,PLUGIN_ID,PLUGIN_VERSION,SETTLEMENT_RATIO,TEST_PLUGIN_ID
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_piple
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByPipleName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_piple
+    where PIPLE_NAME = #{pipleName,jdbcType=VARCHAR} AND SHOW_STATUS = 1
+  </select>
+  
+   <select id="getPiplesByUserId"  resultMap="BaseResultMap"   parameterType="java.lang.String">
+  	 SELECT 
+    p.PIPLE_NUMBER,p.PIPLE_ID,p.PIPLE_NAME
+    FROM t_user_piple u,t_piple p
+    WHERE  u.PIPLE_ID = p.PIPLE_ID AND  u.USER_ID = #{userId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getPipleList" resultMap="BaseResultMap">
+	    SELECT
+	  a.PIPLE_ID        AS PIPLE_ID,
+	  a.PIPLE_NAME      AS PIPLE_NAME,
+	  a.SUPPLIER_ID     AS SUPPLIER_ID,
+	  a.OP_STATUS       AS OP_STATUS,
+	  a.CONTRACT_ID     AS CONTRACT_ID,
+	  a.PIPLE_URL_A     AS PIPLE_URL_A,
+	  a.PIPLE_URL_B     AS PIPLE_URL_B,
+	  a.NOTIFY_URL_A    AS NOTIFY_URL_A,
+	  a.NOTIFY_URL_B    AS NOTIFY_URL_B,
+	  a.CHANNEL_URL_A   AS CHANNEL_URL_A,
+	  a.CHANNEL_URL_B   AS CHANNEL_URL_B,
+	  a.PIPLE_DOC       AS PIPLE_DOC,
+	  a.CHANNEL_DOC     AS CHANNEL_DOC,
+	  a.PIPLE_AUTH_A    AS PIPLE_AUTH_A,
+	  a.PIPLE_AUTH_B    AS PIPLE_AUTH_B,
+	  a.PIPLE_AUTH_C    AS PIPLE_AUTH_C,
+	  a.PIPLE_AUTH_D    AS PIPLE_AUTH_D,
+	  a.PLUGIN_ID       AS PLUGIN_ID,
+	  a.PLUGIN_VERSION  AS PLUGIN_VERSION,
+	  a.TEST_PLUGIN_ID        AS TEST_PLUGIN_ID,
+	  a.HOST_ID         AS HOST_ID,
+	  a.CODE_TYPE       AS CODE_TYPE,
+	  a.PIPLE_TYPE      AS PIPLE_TYPE,
+	  a.CALC_TYPE       AS CALC_TYPE,
+	  a.PLUGIN_TYPE       AS PLUGIN_TYPE,
+	  a.PIPLE_NUMBER    AS PIPLE_NUMBER,
+	  a.CREATE_TIME     AS CREATE_TIME,
+	  a.MOD_TIME        AS MOD_TIME,
+	  a.SETTLEMENT_RATIO AS SETTLEMENT_RATIO,
+	  a.SUPPLIER_NAME   AS SUPPLIER_NAME,
+	  a.HOST_NAME		AS HOST_NAME,
+	  b.FILENAME        AS PIPLE_DOC_NAME,
+	  c.FILENAME        AS CHANNEL_DOC_NAME,
+	  d.FILENAME		AS PLUGIN_NAME,
+	  dp.DIC_NAME        AS PIPLE_TYPE_DESC,
+	  dca.DIC_NAME       AS CALC_TYPE_DESC,
+	  dco.DIC_NAME       AS CODE_TYPE_DESC,
+	  dpl.DIC_NAME       AS PLUGIN_TYPE_DESC
+	
+	FROM (SELECT
+	        p.PIPLE_ID         AS PIPLE_ID,
+	        p.PIPLE_NAME       AS PIPLE_NAME,
+	        p.SUPPLIER_ID      AS SUPPLIER_ID,
+	        p.OP_STATUS        AS OP_STATUS,
+	        p.CONTRACT_ID      AS CONTRACT_ID,
+	        p.PIPLE_URL_A      AS PIPLE_URL_A,
+	        p.PIPLE_URL_B      AS PIPLE_URL_B,
+	        p.NOTIFY_URL_A     AS NOTIFY_URL_A,
+	        p.NOTIFY_URL_B     AS NOTIFY_URL_B,
+	        p.CHANNEL_URL_A    AS CHANNEL_URL_A,
+	        p.CHANNEL_URL_B    AS CHANNEL_URL_B,
+	        p.PIPLE_DOC        AS PIPLE_DOC,
+	        p.CHANNEL_DOC      AS CHANNEL_DOC,
+	        p.PIPLE_AUTH_A     AS PIPLE_AUTH_A,
+	        p.PIPLE_AUTH_B     AS PIPLE_AUTH_B,
+	        p.PIPLE_AUTH_C     AS PIPLE_AUTH_C,
+	        p.PIPLE_AUTH_D     AS PIPLE_AUTH_D,
+	        p.HOST_ID          AS HOST_ID,
+	        p.PLUGIN_ID        AS PLUGIN_ID,
+	        p.PLUGIN_VERSION   AS PLUGIN_VERSION,
+	        p.TEST_PLUGIN_ID        AS TEST_PLUGIN_ID,
+	        p.PIPLE_TYPE       AS PIPLE_TYPE,
+	        p.CALC_TYPE        AS CALC_TYPE,
+	        p.CODE_TYPE        AS CODE_TYPE,
+	         p.PLUGIN_TYPE        AS PLUGIN_TYPE,
+	        p.PIPLE_NUMBER     AS PIPLE_NUMBER,
+	        p.CREATE_TIME      AS CREATE_TIME,
+	        p.MOD_TIME         AS MOD_TIME,
+	        p.SETTLEMENT_RATIO AS SETTLEMENT_RATIO,
+	        s.FULL_NAME        AS SUPPLIER_NAME,
+	        h.HOST_NAME		   AS HOST_NAME
+	      FROM t_piple p,
+	        t_supplier s,
+	        t_host	   h
+	        WHERE p.SUPPLIER_ID = s.SUPPLIER_ID  AND p.HOST_ID = h.HOST_ID  AND p.SHOW_STATUS = 1
+	<if test="piple.pipleName != null and piple.pipleName != ''">
+       AND p.PIPLE_NAME LIKE  "%"#{piple.pipleName}"%"
+    </if>
+    <if test="piple.pipleNumber != null and piple.pipleNumber != ''">
+       AND p.PIPLE_NUMBER LIKE  "%"#{piple.pipleNumber}"%"
+    </if>
+    <if test="piple.supplierId != null and piple.supplierId != ''">
+       AND p.SUPPLIER_ID = #{piple.supplierId}
+    </if>
+    <if test="piple.opStatus != null">
+       AND p.OP_STATUS = #{piple.opStatus}
+    </if>
+    <if test="piple.hostId != null">
+       AND p.HOST_ID = #{piple.hostId}
+    </if>
+    <if test="piple.codeType != null">
+       AND p.CODE_TYPE = #{piple.codeType}
+    </if>
+    <if test="piple.pipleType != null">
+       AND p.PIPLE_TYPE = #{piple.pipleType}
+    </if>
+    <if test="piple.calcType != null">
+       AND p.CALC_TYPE = #{piple.calcType}
+    </if>
+    <if test="piple.pluginType != null">
+       AND p.PLUGIN_TYPE = #{piple.pluginType}
+    </if>
+    <if test="pipleIds!=null">
+    <if test="!pipleIds.isEmpty()">
+    	AND p.PIPLE_ID in
+    <foreach collection="pipleIds" item = "pipleId" open="(" separator="," close=")">  
+  		#{pipleId}
+    </foreach>
+    </if>
+     <if test="pipleIds.isEmpty()">
+    	AND p.PIPLE_ID IS NULL
+    </if>
+    </if>
+    ORDER BY p.MOD_TIME DESC) a
+	LEFT JOIN (SELECT t1.FILE_ID  ,t1.FILENAME  FROM t_blob_content t1) b ON b.FILE_ID = a.PIPLE_DOC
+	LEFT JOIN (SELECT t2.FILE_ID ,t2.FILENAME  FROM t_blob_content t2) c ON c.FILE_ID = a.CHANNEL_DOC
+	LEFT JOIN (SELECT t3.FILE_ID ,t3.FILENAME  FROM t_blob_content t3) d ON d.FILE_ID = a.PLUGIN_ID
+	LEFT JOIN (SELECT
+               t2.DIC_CODE,
+               t2.DIC_NAME
+             FROM t_dic t2) dp
+    ON a.PIPLE_TYPE = dp.DIC_CODE
+     LEFT JOIN (SELECT
+               t2.DIC_CODE,
+               t2.DIC_NAME
+             FROM t_dic t2) dca
+    ON a.CALC_TYPE = dca.DIC_CODE
+    LEFT JOIN (SELECT
+               t2.DIC_CODE,
+               t2.DIC_NAME
+             FROM t_dic t2) dco
+    ON a.CODE_TYPE = dco.DIC_CODE
+    LEFT JOIN (SELECT
+               t2.DIC_CODE,
+               t2.DIC_NAME
+             FROM t_dic t2) dpl
+    ON a.PLUGIN_TYPE = dpl.DIC_CODE
+	LIMIT #{start},#{end}
+  </select>
+  <select id="getPipleItems" resultType="java.lang.Integer">
+    SELECT count(*) FROM t_piple p, t_supplier s,t_host	h
+	WHERE p.SUPPLIER_ID = s.SUPPLIER_ID  AND p.HOST_ID = h.HOST_ID AND p.SHOW_STATUS = 1
+	<if test="piple.pipleName != null and piple.pipleName != ''">
+       AND p.PIPLE_NAME LIKE  "%"#{piple.pipleName}"%"
+    </if>
+    <if test="piple.pipleNumber != null and piple.pipleNumber != ''">
+       AND p.PIPLE_NUMBER LIKE  "%"#{piple.pipleNumber}"%"
+    </if>
+    <if test="piple.supplierId != null and piple.supplierId != ''">
+       AND p.SUPPLIER_ID = #{piple.supplierId}
+    </if>
+    <if test="piple.opStatus != null">
+       AND p.OP_STATUS = #{piple.opStatus}
+    </if>
+    <if test="piple.hostId != null">
+       AND p.HOST_ID = #{piple.hostId}
+    </if>
+    <if test="piple.codeType != null">
+       AND p.CODE_TYPE = #{piple.codeType}
+    </if>
+    <if test="piple.pipleType != null">
+       AND p.PIPLE_TYPE = #{piple.pipleType}
+    </if>
+    <if test="piple.calcType != null">
+       AND p.CALC_TYPE = #{piple.calcType}
+    </if>
+     <if test="piple.pluginType != null">
+       AND p.PLUGIN_TYPE = #{piple.pluginType}
+    </if>
+    <if test="pipleIds!=null">
+    <if test="!pipleIds.isEmpty() ">
+    	AND p.PIPLE_ID in
+    <foreach collection="pipleIds" item = "pipleId" open="(" separator="," close=")">  
+  		#{pipleId}
+    </foreach>
+    </if>
+    <if test="pipleIds.isEmpty()">
+    	AND p.PIPLE_ID IS NULL
+    </if>
+    </if>
+  </select>
+  <select id="getAllPiples" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_piple where SHOW_STATUS = 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_piple
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR} AND SHOW_STATUS = 1
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TPiple">
+    insert into t_piple (PIPLE_ID, PIPLE_NAME, SUPPLIER_ID, 
+      OP_STATUS, CONTRACT_ID, PIPLE_URL_A, 
+      PIPLE_URL_B, NOTIFY_URL_A, NOTIFY_URL_B, 
+      CHANNEL_URL_A, CHANNEL_URL_B, PIPLE_DOC, 
+      CHANNEL_DOC, PIPLE_AUTH_A, PIPLE_AUTH_B, 
+      PIPLE_AUTH_C, PIPLE_AUTH_D, HOST_ID, 
+      CODE_TYPE, PIPLE_TYPE, CALC_TYPE, PLUGIN_TYPE, 
+      PIPLE_NUMBER, CREATE_TIME, MOD_TIME,PLUGIN_ID,PLUGIN_VERSION,SETTLEMENT_RATIO,TEST_PLUGIN_ID
+      )
+    values (#{pipleId,jdbcType=VARCHAR}, #{pipleName,jdbcType=VARCHAR}, #{supplierId,jdbcType=VARCHAR}, 
+      #{opStatus,jdbcType=INTEGER}, #{contractId,jdbcType=VARCHAR}, #{pipleUrlA,jdbcType=VARCHAR}, 
+      #{pipleUrlB,jdbcType=VARCHAR}, #{notifyUrlA,jdbcType=VARCHAR}, #{notifyUrlB,jdbcType=VARCHAR}, 
+      #{channelUrlA,jdbcType=VARCHAR}, #{channelUrlB,jdbcType=VARCHAR}, #{pipleDoc,jdbcType=VARCHAR}, 
+      #{channelDoc,jdbcType=VARCHAR}, #{pipleAuthA,jdbcType=VARCHAR}, #{pipleAuthB,jdbcType=VARCHAR}, 
+      #{pipleAuthC,jdbcType=VARCHAR}, #{pipleAuthD,jdbcType=VARCHAR}, #{hostId,jdbcType=INTEGER}, 
+      #{codeType,jdbcType=INTEGER}, #{pipleType,jdbcType=INTEGER}, #{calcType,jdbcType=INTEGER}, #{pluginType,jdbcType=INTEGER}, 
+      #{pipleNumber,jdbcType=VARCHAR}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
+      #{pluginId,jdbcType=VARCHAR}, #{pluginVersion,jdbcType=VARCHAR},#{settlementRatio,jdbcType=DOUBLE},#{testPluginId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TPiple">
+    insert into t_piple
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pipleId != null">
+        PIPLE_ID,
+      </if>
+      <if test="pipleName != null">
+        PIPLE_NAME,
+      </if>
+      <if test="supplierId != null">
+        SUPPLIER_ID,
+      </if>
+      <if test="opStatus != null">
+        OP_STATUS,
+      </if>
+      <if test="contractId != null">
+        CONTRACT_ID,
+      </if>
+      <if test="pipleUrlA != null">
+        PIPLE_URL_A,
+      </if>
+      <if test="pipleUrlB != null">
+        PIPLE_URL_B,
+      </if>
+      <if test="notifyUrlA != null">
+        NOTIFY_URL_A,
+      </if>
+      <if test="notifyUrlB != null">
+        NOTIFY_URL_B,
+      </if>
+      <if test="channelUrlA != null">
+        CHANNEL_URL_A,
+      </if>
+      <if test="channelUrlB != null">
+        CHANNEL_URL_B,
+      </if>
+      <if test="pipleDoc != null">
+        PIPLE_DOC,
+      </if>
+      <if test="channelDoc != null">
+        CHANNEL_DOC,
+      </if>
+      <if test="pipleAuthA != null">
+        PIPLE_AUTH_A,
+      </if>
+      <if test="pipleAuthB != null">
+        PIPLE_AUTH_B,
+      </if>
+      <if test="pipleAuthC != null">
+        PIPLE_AUTH_C,
+      </if>
+      <if test="pipleAuthD != null">
+        PIPLE_AUTH_D,
+      </if>
+      <if test="hostId != null">
+        HOST_ID,
+      </if>
+      <if test="codeType != null">
+        CODE_TYPE,
+      </if>
+      <if test="pipleType != null">
+        PIPLE_TYPE,
+      </if>
+      <if test="calcType != null">
+        CALC_TYPE,
+      </if>
+      <if test="pluginType != null">
+        PLUGIN_TYPE,
+      </if>
+      <if test="pipleNumber != null">
+        PIPLE_NUMBER,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="modTime != null">
+        MOD_TIME,
+      </if>
+      <if test="pluginId != null">
+        PLUGIN_ID,
+      </if>
+      <if test="pluginVersion != null">
+        PLUGIN_VERSION,
+      </if>
+       <if test="settlementRatio != null">
+        SETTLEMENT_RATIO,
+      </if>
+      <if test="testPluginId != null">
+        TEST_PLUGIN_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pipleId != null">
+        #{pipleId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleName != null">
+        #{pipleName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierId != null">
+        #{supplierId,jdbcType=VARCHAR},
+      </if>
+      <if test="opStatus != null">
+        #{opStatus,jdbcType=INTEGER},
+      </if>
+      <if test="contractId != null">
+        #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleUrlA != null">
+        #{pipleUrlA,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleUrlB != null">
+        #{pipleUrlB,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyUrlA != null">
+        #{notifyUrlA,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyUrlB != null">
+        #{notifyUrlB,jdbcType=VARCHAR},
+      </if>
+      <if test="channelUrlA != null">
+        #{channelUrlA,jdbcType=VARCHAR},
+      </if>
+      <if test="channelUrlB != null">
+        #{channelUrlB,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleDoc != null">
+        #{pipleDoc,jdbcType=VARCHAR},
+      </if>
+      <if test="channelDoc != null">
+        #{channelDoc,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleAuthA != null">
+        #{pipleAuthA,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleAuthB != null">
+        #{pipleAuthB,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleAuthC != null">
+        #{pipleAuthC,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleAuthD != null">
+        #{pipleAuthD,jdbcType=VARCHAR},
+      </if>
+      <if test="hostId != null">
+        #{hostId,jdbcType=INTEGER},
+      </if>
+      <if test="codeType != null">
+        #{codeType,jdbcType=INTEGER},
+      </if>
+      <if test="pipleType != null">
+        #{pipleType,jdbcType=INTEGER},
+      </if>
+      <if test="calcType != null">
+        #{calcType,jdbcType=INTEGER},
+      </if>
+      <if test="pluginType != null">
+        #{pluginType,jdbcType=INTEGER},
+      </if>
+      <if test="pipleNumber != null">
+        #{pipleNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modTime != null">
+        #{modTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pluginId != null">
+        #{pluginId,jdbcType=VARCHAR},
+      </if>
+      <if test="pluginVersion != null">
+        #{pluginVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementRatio != null">
+        #{settlementRatio,jdbcType=DOUBLE},
+      </if>
+       <if test="testPluginId != null">
+        #{testPluginId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TPiple">
+    update t_piple
+    <set>
+      <if test="pipleName != null">
+        PIPLE_NAME = #{pipleName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierId != null">
+        SUPPLIER_ID = #{supplierId,jdbcType=VARCHAR},
+      </if>
+      <if test="opStatus != null">
+        OP_STATUS = #{opStatus,jdbcType=INTEGER},
+      </if>
+      <if test="contractId != null">
+        CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleUrlA != null">
+        PIPLE_URL_A = #{pipleUrlA,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleUrlB != null">
+        PIPLE_URL_B = #{pipleUrlB,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyUrlA != null">
+        NOTIFY_URL_A = #{notifyUrlA,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyUrlB != null">
+        NOTIFY_URL_B = #{notifyUrlB,jdbcType=VARCHAR},
+      </if>
+      <if test="channelUrlA != null">
+        CHANNEL_URL_A = #{channelUrlA,jdbcType=VARCHAR},
+      </if>
+      <if test="channelUrlB != null">
+        CHANNEL_URL_B = #{channelUrlB,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleDoc != null">
+        PIPLE_DOC = #{pipleDoc,jdbcType=VARCHAR},
+      </if>
+      <if test="channelDoc != null">
+        CHANNEL_DOC = #{channelDoc,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleAuthA != null">
+        PIPLE_AUTH_A = #{pipleAuthA,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleAuthB != null">
+        PIPLE_AUTH_B = #{pipleAuthB,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleAuthC != null">
+        PIPLE_AUTH_C = #{pipleAuthC,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleAuthD != null">
+        PIPLE_AUTH_D = #{pipleAuthD,jdbcType=VARCHAR},
+      </if>
+      <if test="hostId != null">
+        HOST_ID = #{hostId,jdbcType=INTEGER},
+      </if>
+      <if test="codeType != null">
+        CODE_TYPE = #{codeType,jdbcType=INTEGER},
+      </if>
+      <if test="pipleType != null">
+        PIPLE_TYPE = #{pipleType,jdbcType=INTEGER},
+      </if>
+      <if test="calcType != null">
+        CALC_TYPE = #{calcType,jdbcType=INTEGER},
+      </if>
+        <if test="pluginType != null">
+        PLUGIN_TYPE = #{pluginType,jdbcType=INTEGER},
+      </if>
+      <if test="pipleNumber != null">
+        PIPLE_NUMBER = #{pipleNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modTime != null">
+        MOD_TIME = #{modTime,jdbcType=TIMESTAMP},
+      </if>
+       <if test="pluginId != null">
+        PLUGIN_ID = #{pluginId,jdbcType=VARCHAR},
+      </if>
+       <if test="pluginVersion != null">
+        PLUGIN_VERSION = #{pluginVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementRatio != null">
+        SETTLEMENT_RATIO = #{settlementRatio,jdbcType=DOUBLE},
+      </if>
+        <if test="testPluginId != null">
+        TEST_PLUGIN_ID = #{testPluginId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TPiple">
+    update t_piple
+    set PIPLE_NAME = #{pipleName,jdbcType=VARCHAR},
+      SUPPLIER_ID = #{supplierId,jdbcType=VARCHAR},
+      OP_STATUS = #{opStatus,jdbcType=INTEGER},
+      CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      PIPLE_URL_A = #{pipleUrlA,jdbcType=VARCHAR},
+      PIPLE_URL_B = #{pipleUrlB,jdbcType=VARCHAR},
+      NOTIFY_URL_A = #{notifyUrlA,jdbcType=VARCHAR},
+      NOTIFY_URL_B = #{notifyUrlB,jdbcType=VARCHAR},
+      CHANNEL_URL_A = #{channelUrlA,jdbcType=VARCHAR},
+      CHANNEL_URL_B = #{channelUrlB,jdbcType=VARCHAR},
+      PIPLE_DOC = #{pipleDoc,jdbcType=VARCHAR},
+      CHANNEL_DOC = #{channelDoc,jdbcType=VARCHAR},
+      PIPLE_AUTH_A = #{pipleAuthA,jdbcType=VARCHAR},
+      PIPLE_AUTH_B = #{pipleAuthB,jdbcType=VARCHAR},
+      PIPLE_AUTH_C = #{pipleAuthC,jdbcType=VARCHAR},
+      PIPLE_AUTH_D = #{pipleAuthD,jdbcType=VARCHAR},
+      HOST_ID = #{hostId,jdbcType=INTEGER},
+      CODE_TYPE = #{codeType,jdbcType=INTEGER},
+      PIPLE_TYPE = #{pipleType,jdbcType=INTEGER},
+      CALC_TYPE = #{calcType,jdbcType=INTEGER},
+       PLUGIN_TYPE = #{pluginType,jdbcType=INTEGER},
+      PIPLE_NUMBER = #{pipleNumber,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      MOD_TIME = CURRENT_TIMESTAMP,
+      PLUGIN_ID = #{pluginId,jdbcType=VARCHAR},
+      PLUGIN_VERSION = #{pluginVersion,jdbcType=VARCHAR},
+      SETTLEMENT_RATIO = #{settlementRatio,jdbcType=DOUBLE},
+      TEST_PLUGIN_ID = #{testPluginId,jdbcType=VARCHAR}
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+    
+  </update>
+</mapper>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qy.sp.manage.dao.impl.SdkconfigDao">
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TSdkconfig">
+    <id column="CONFIG_ID" jdbcType="VARCHAR" property="configId" />
+    <result column="CONFIG_DESCRIPTION" jdbcType="VARCHAR" property="configDescription" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="MOD_TIME" jdbcType="TIMESTAMP" property="modTime" />
+    <result column="CONFIG_VALUE" jdbcType="VARCHAR" property="globalConfigValue" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    CONFIG_ID, CONFIG_DESCRIPTION, CREATE_TIME, MOD_TIME
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT 
+	a.CONFIG_ID,
+	a.CONFIG_DESCRIPTION,
+	a.CREATE_TIME,
+	a.MOD_TIME,
+	b.CONFIG_VALUE
+	FROM 
+	(SELECT CONFIG_ID,CONFIG_DESCRIPTION,CREATE_TIME,MOD_TIME FROM t_sdkconfig) a
+	LEFT JOIN
+	(SELECT CONFIG_ID,CONFIG_VALUE FROM t_sdkconfig_global) b
+	ON (a.CONFIG_ID = b.CONFIG_ID)
+    WHERE a.CONFIG_ID = #{configId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_sdkconfig
+    where CONFIG_ID = #{configId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TSdkconfig">
+    insert into t_sdkconfig (CONFIG_ID, CONFIG_DESCRIPTION, CREATE_TIME, 
+      MOD_TIME)
+    values (#{configId,jdbcType=VARCHAR}, #{configDescription,jdbcType=VARCHAR}, CURRENT_TIMESTAMP, 
+      CURRENT_TIMESTAMP)
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TSdkconfig">
+    insert into t_sdkconfig
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="configId != null">
+        CONFIG_ID,
+      </if>
+      <if test="configDescription != null">
+        CONFIG_DESCRIPTION,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="modTime != null">
+        MOD_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="configId != null">
+        #{configId,jdbcType=VARCHAR},
+      </if>
+      <if test="configDescription != null">
+        #{configDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modTime != null">
+        #{modTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TSdkconfig">
+    update t_sdkconfig
+    <set>
+      <if test="configDescription != null">
+        CONFIG_DESCRIPTION = #{configDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modTime != null">
+        MOD_TIME = #{modTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where CONFIG_ID = #{configId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TSdkconfig">
+    update t_sdkconfig
+    set CONFIG_DESCRIPTION = #{configDescription,jdbcType=VARCHAR},
+      MOD_TIME = CURRENT_TIMESTAMP
+    where CONFIG_ID = #{configId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="getSdkConfigList" resultMap="BaseResultMap">
+   	SELECT 
+	a.CONFIG_ID,
+	a.CONFIG_DESCRIPTION,
+	a.CREATE_TIME,
+	a.MOD_TIME,
+	b.CONFIG_VALUE
+	FROM
+   	(SELECT CONFIG_ID,CONFIG_DESCRIPTION,CREATE_TIME,MOD_TIME FROM t_sdkconfig 
+	WHERE 1=1
+	<if test="sdkconfig.configDescription != null and sdkconfig.configDescription != ''">
+       AND CONFIG_DESCRIPTION LIKE  "%"#{sdkconfig.configDescription}"%"
+    </if>
+    <if test="sdkconfig.configId != null and sdkconfig.configId != ''">
+       AND CONFIG_ID = #{sdkconfig.configId}
+    </if>
+    ) a
+    LEFT JOIN
+	(SELECT CONFIG_ID,CONFIG_VALUE FROM t_sdkconfig_global) b
+	ON (a.CONFIG_ID = b.CONFIG_ID)
+	LIMIT #{start},#{end}
+  </select>
+  <select id="getSdkConfigItems" parameterType="com.qy.sp.manage.dto.TSdkconfig" resultType="java.lang.Integer">
+    SELECT count(*) FROM t_sdkconfig 
+	WHERE 1=1
+	<if test="configDescription != null and configDescription != ''">
+       AND CONFIG_DESCRIPTION LIKE  "%"#{configDescription}"%"
+    </if>
+    <if test="configId != null and configId != ''">
+       AND CONFIG_ID = #{configId}
+    </if>
+  </select>
+ 
+</mapper>

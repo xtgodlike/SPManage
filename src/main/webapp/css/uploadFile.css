@@ -1,0 +1,61 @@
+.uploadDiv{
+	float: left;
+	position: relative;
+	width: 250px;
+	height: 44px;
+	margin-right: 8px;
+	margin-bottom: 5px;
+}
+
+.uploadFile{
+	position: absolute;
+	left:0;
+	top:0;
+	z-index:2;
+	border:0;
+	filter: alpha(opacity=0);
+	opacity: 0.0;
+	background-color: red;
+	width: 100%;
+	height: 100%;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.uploadFileBtn{
+	position: absolute;
+	z-index:1;
+	width: 100%;
+	height: 100%;
+	background-color: #F5F7FA;
+	border: 0px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.deleteFile{
+	position: absolute;
+	z-index:3;
+	width: 20px;
+	height: 20px;
+	right: 0px;
+	top:0;
+	float: right;
+	background-color: #D8D8D8;
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+	border-bottom-right-radius: 20px;
+	border-bottom-left-radius: 20px;
+	text-align: center;
+	vertical-align: middle;
+	padding: 0px 1px 2px 1px;
+	cursor: pointer;
+}

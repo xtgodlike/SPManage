@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.DicDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TDic" >
+    <id column="DIC_ID" property="dicId" jdbcType="INTEGER" />
+    <result column="DTYPE_ID" property="dtypeId" jdbcType="INTEGER" />
+    <result column="DIC_CODE" property="dicCode" jdbcType="VARCHAR" />
+    <result column="DIC_NAME" property="dicName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    DIC_ID, DTYPE_ID, DIC_CODE, DIC_NAME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_dic
+    where DIC_ID = #{dicId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByDTypeId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_dic
+    where DTYPE_ID = #{dtypeId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_dic
+    where DIC_ID = #{dicId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TDic" >
+    insert into t_dic (DIC_ID, DTYPE_ID, DIC_CODE, 
+      DIC_NAME)
+    values (#{dicId,jdbcType=INTEGER}, #{dtypeId,jdbcType=INTEGER}, #{dicCode,jdbcType=VARCHAR}, 
+      #{dicName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TDic" >
+    insert into t_dic
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dicId != null" >
+        DIC_ID,
+      </if>
+      <if test="dtypeId != null" >
+        DTYPE_ID,
+      </if>
+      <if test="dicCode != null" >
+        DIC_CODE,
+      </if>
+      <if test="dicName != null" >
+        DIC_NAME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dicId != null" >
+        #{dicId,jdbcType=INTEGER},
+      </if>
+      <if test="dtypeId != null" >
+        #{dtypeId,jdbcType=INTEGER},
+      </if>
+      <if test="dicCode != null" >
+        #{dicCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dicName != null" >
+        #{dicName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TDic" >
+    update t_dic
+    <set >
+      <if test="dtypeId != null" >
+        DTYPE_ID = #{dtypeId,jdbcType=INTEGER},
+      </if>
+      <if test="dicCode != null" >
+        DIC_CODE = #{dicCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dicName != null" >
+        DIC_NAME = #{dicName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where DIC_ID = #{dicId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TDic" >
+    update t_dic
+    set DTYPE_ID = #{dtypeId,jdbcType=INTEGER},
+      DIC_CODE = #{dicCode,jdbcType=VARCHAR},
+      DIC_NAME = #{dicName,jdbcType=VARCHAR}
+    where DIC_ID = #{dicId,jdbcType=INTEGER}
+  </update>
+  <select id="getSeqCurrvalByType" resultType="java.lang.Integer">
+   SELECT currval(#{seqType,jdbcType=VARCHAR})
+  </select>
+   <select id="getSeqNextvalByType" resultType="java.lang.Integer">
+   SELECT nextval(#{seqType,jdbcType=VARCHAR})
+  </select>
+</mapper>

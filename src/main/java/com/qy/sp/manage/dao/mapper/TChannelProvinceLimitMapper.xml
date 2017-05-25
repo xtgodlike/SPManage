@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.ChannelProvinceLimitDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TChannelProvinceLimit" >
+    <id column="PIPLE_ID" property="pipleId" jdbcType="VARCHAR" />
+    <id column="CHANNEL_ID" property="channelId" jdbcType="VARCHAR" />
+    <id column="PROVINCE_ID" property="provinceId" jdbcType="INTEGER" />
+    <result column="TRADE_DAY" property="tradeDay" jdbcType="INTEGER" />
+    <result column="TRADE_MONTH" property="tradeMonth" jdbcType="INTEGER" />
+    <result column="OP_STATUS" property="opStatus" jdbcType="INTEGER" />
+    <result column="PIPLE_NAME" property="pipleName" jdbcType="VARCHAR" />
+    <result column="CHANNEL_NAME" property="channelName" jdbcType="VARCHAR" />
+    <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PIPLE_ID, CHANNEL_ID, PROVINCE_ID, TRADE_DAY, TRADE_MONTH
+  </sql>
+  
+  <select id="getListByPipleIdAndChannelId" resultMap="BaseResultMap"  parameterType="com.qy.sp.manage.dto.TChannelProvinceLimitKey" >
+    select 
+    t2.PIPLE_NAME PIPLE_NAME,t3.FULL_NAME CHANNEL_NAME,t4.PROVINCE_NAME PROVINCE_NAME,t5.OP_STATUS OP_STATUS,
+    t1.PIPLE_ID PIPLE_ID,t1.CHANNEL_ID CHANNEL_ID,t1.PROVINCE_ID PROVINCE_ID,t1.TRADE_DAY TRADE_DAY,t1.TRADE_MONTH TRADE_MONTH
+    from t_channel_province_limit t1,t_piple t2,t_channel t3,t_province t4,t_piple_province t5
+	where t1.PIPLE_ID = t2.PIPLE_ID and t1.CHANNEL_ID = t3.CHANNEL_ID and t1.PROVINCE_ID = t4.PROVINCE_ID and t1.PIPLE_ID = t5.PIPLE_ID and t1.PROVINCE_ID = t5.PROVINCE_ID
+	  and t1.PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+      and t1.CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      order by t5.OP_STATUS desc
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.qy.sp.manage.dto.TChannelProvinceLimitKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_channel_province_limit
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.qy.sp.manage.dto.TChannelProvinceLimitKey" >
+    delete from t_channel_province_limit
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insertBatch"  parameterType="java.util.List">  
+     insert into t_channel_province_limit (PIPLE_ID, CHANNEL_ID, PROVINCE_ID, 
+      TRADE_DAY, TRADE_MONTH)
+    values  
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.pipleId},#{item.channelId},#{item.provinceId},#{item.tradeDay},#{item.tradeMonth})  
+    </foreach>  
+  </insert> 
+  
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TChannelProvinceLimit" >
+    insert into t_channel_province_limit (PIPLE_ID, CHANNEL_ID, PROVINCE_ID, 
+      TRADE_DAY, TRADE_MONTH)
+    values (#{pipleId,jdbcType=VARCHAR}, #{channelId,jdbcType=VARCHAR}, #{provinceId,jdbcType=INTEGER}, 
+      #{tradeDay,jdbcType=INTEGER}, #{tradeMonth,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TChannelProvinceLimit" >
+    insert into t_channel_province_limit
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="pipleId != null" >
+        PIPLE_ID,
+      </if>
+      <if test="channelId != null" >
+        CHANNEL_ID,
+      </if>
+      <if test="provinceId != null" >
+        PROVINCE_ID,
+      </if>
+      <if test="tradeDay != null" >
+        TRADE_DAY,
+      </if>
+      <if test="tradeMonth != null" >
+        TRADE_MONTH,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="pipleId != null" >
+        #{pipleId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null" >
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null" >
+        #{provinceId,jdbcType=INTEGER},
+      </if>
+      <if test="tradeDay != null" >
+        #{tradeDay,jdbcType=INTEGER},
+      </if>
+      <if test="tradeMonth != null" >
+        #{tradeMonth,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TChannelProvinceLimit" >
+    update t_channel_province_limit
+    <set >
+      <if test="tradeDay != null" >
+        TRADE_DAY = #{tradeDay,jdbcType=INTEGER},
+      </if>
+      <if test="tradeMonth != null" >
+        TRADE_MONTH = #{tradeMonth,jdbcType=INTEGER},
+      </if>
+    </set>
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TChannelProvinceLimit" >
+    update t_channel_province_limit
+    set TRADE_DAY = #{tradeDay,jdbcType=INTEGER},
+      TRADE_MONTH = #{tradeMonth,jdbcType=INTEGER}
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateBatch" parameterType="java.util.List">
+  	update t_channel_province_limit
+          <trim prefix="set" suffixOverrides=",">
+           <trim prefix="TRADE_DAY =case" suffix="end,">
+               <foreach collection="list" item="i" index="index">
+                       <if test="i.tradeDay!=null">
+                        when PROVINCE_ID=#{i.provinceId} then #{i.tradeDay}
+                       </if>
+               </foreach>
+            </trim>
+            <trim prefix=" TRADE_MONTH =case" suffix="end,">
+               <foreach collection="list" item="i" index="index">
+                       <if test="i.tradeMonth!=null">
+                        when PROVINCE_ID=#{i.provinceId} then #{i.tradeMonth}
+                       </if>
+               </foreach>
+            </trim>
+           </trim>
+          where
+          <foreach collection="list" separator="or" item="i" index="index" >
+            PROVINCE_ID=#{i.provinceId} and CHANNEL_ID=#{i.channelId}  and PIPLE_ID=#{i.pipleId} 
+        </foreach>
+  </update>
+</mapper>

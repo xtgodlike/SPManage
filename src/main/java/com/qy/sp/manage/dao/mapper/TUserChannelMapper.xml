@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.UserChannelDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TUserChannelKey" >
+    <id column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <id column="CHANNEL_ID" property="channelId" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="com.qy.sp.manage.dto.TUserChannelKey" >
+    delete from t_user_channel
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByUserId" parameterType="java.lang.String" >
+    delete from t_user_channel
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TUserChannelKey" >
+    insert into t_user_channel (USER_ID, CHANNEL_ID)
+    values (#{userId,jdbcType=VARCHAR}, #{channelId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TUserChannelKey" >
+    insert into t_user_channel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="channelId != null" >
+        CHANNEL_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null" >
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="getUserChannels" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select 
+    USER_ID,CHANNEL_ID
+    from t_user_channel
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getChannelIdsByUserId" resultType="java.lang.String" parameterType="java.lang.String">
+  	select 
+    CHANNEL_ID
+    from t_user_channel
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+  </select>
+</mapper>

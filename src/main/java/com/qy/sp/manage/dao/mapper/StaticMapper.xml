@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.StaticDataDao" >
+	<resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.sta.StaticEntity">
+		<result column="COMP_DATE" property="compDate" jdbcType="DATE" />
+		<result column="PIPLE_NUMBER" property="pipleNumber" jdbcType="VARCHAR" />
+		<result column="PIPLE_NAME" property="pipleName" jdbcType="VARCHAR" />
+		<result column="CHANNEL_NAME" property="channelName" jdbcType="VARCHAR" />
+		<result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+		<result column="AMTOTAL" property="amountTotal" jdbcType="DOUBLE" />
+		<result column="CTTOTAL" property="countToltal" jdbcType="INTEGER" />
+		
+		<result column="AMW" property="amountW" jdbcType="DOUBLE" />
+		<result column="CTW" property="countW" jdbcType="INTEGER" />
+		<result column="AMF" property="amountF" jdbcType="DOUBLE" />
+		<result column="CTF" property="countF" jdbcType="INTEGER" />
+		
+		<result column="AMCH" property="amountChannel" jdbcType="DOUBLE" />
+		<result column="CTCH" property="countChannel" jdbcType="INTEGER" />
+		<result column="AMDEC" property="amountDeducted" jdbcType="DOUBLE" />
+		<result column="CTDEC" property="countDeducted" jdbcType="INTEGER" />
+	</resultMap>
+
+	<resultMap id="SalesResultMap"	
+		type="com.qy.sp.manage.dto.sta.StatisticSalesEntity">
+		<result column="COMP_DATE" property="compDate" jdbcType="DATE" />
+		<result column="PIPLE_NUMBER" property="pipleNumber" jdbcType="VARCHAR" />
+		<result column="PIPLE_NAME" property="pipleName" jdbcType="VARCHAR" />
+		<result column="CHANNEL_NAME" property="channelName" jdbcType="VARCHAR" />
+		<result column="OSTATUS" property="orderStatus" jdbcType="INTEGER" />
+		<result column="DECSTATUS" property="deductedStatus" jdbcType="INTEGER" />
+		<result column="AMOUNTT" property="amount" jdbcType="DOUBLE" />
+		<result column="COUNTT" property="count" jdbcType="INTEGER" />
+		<result column="PIPLE_SETRATIO" property="pipleSetRatio" jdbcType="DOUBLE" />
+		<result column="CHANNEL_SETRATIO" property="channelSetRatio" jdbcType="DOUBLE" />
+	</resultMap>
+
+	<resultMap id="DayRunResultMap"	
+		type="com.qy.sp.manage.dto.sta.RunDailyEntity">
+		<result column="PIPLE_NUMBER" property="pipleNumber" jdbcType="VARCHAR" />
+		<result column="PIPLE_NAME" property="pipleName" jdbcType="VARCHAR" />
+		<result column="CHANNEL_NAME" property="channelName" jdbcType="VARCHAR" />
+		<result column="PRODUCT_ID" property="productId" jdbcType="INTEGER" />
+		<result column="AMTOTAL" property="amountTotal" jdbcType="DOUBLE" />
+		<result column="UNAMTOTAL" property="amountUnfinished" jdbcType="DOUBLE" />
+		<result column="NUAMTOTAL" property="amountNotUp" jdbcType="DOUBLE" />
+		<result column="FAMTOTAL" property="amountFail" jdbcType="DOUBLE" />
+		<result column="SAMTOTAL" property="amountSuccess" jdbcType="DOUBLE" />
+		<result column="CAMTOTAL" property="amountChannel" jdbcType="DOUBLE" />
+		<result column="DAMTOTAL" property="amountDeducted" jdbcType="DOUBLE" />
+		<result column="RPD" property="ratePreDeducted" jdbcType="DOUBLE" />
+		<result column="RD" property="rateDeducted" jdbcType="DOUBLE" />
+	</resultMap>
+  
+  <sql id="Base_Column_List" >
+    ORDER_ID, PIPLE_ID, MOBILE, CHANNEL_ID, PRODUCT_ID, ORDER_STATUS, SUB_STATUS, PIPLE_ORDER_ID, 
+    CREATE_TIME, MOD_TIME, COMPLETE_TIME, DEC_STATUS, RND,PROVINCE_ID, IMSI, ICCID, RESULT_CODE,VOLT,ORDER_GROUP_ID,AMOUNT
+  </sql>
+  <select id="selectByAdmin" resultMap="BaseResultMap">
+      SELECT A.COMP_DATE,T2.PIPLE_NUMBER, T2.PIPLE_NAME,T3.FULL_NAME CHANNEL_NAME,IF(A.AM IS NULL, 0, A.AM) AMTOTAL,IF(A.CT IS NULL, 0, A.CT)  CTTOTAL,
+ IF(D.AM IS NULL, 0, D.AM) AMW,IF(D.CT IS NULL, 0, D.CT) CTW,IF(E.AM IS NULL, 0, E.AM) AMF,IF(E.CT IS NULL, 0, E.CT) CTF,IF(B.AM IS NULL, 0, B.AM) AMCH,
+ IF(B.CT IS NULL, 0, B.CT) CTCH,IF(C.AM IS NULL, 0, C.AM)  AMDEC,IF(C.CT IS NULL, 0, C.CT) CTDEC FROM 
+(SELECT T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID, SUM(T.AMOUNT) AM, SUM(t.CNT) CT FROM T_STA_DAILY T  GROUP BY T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID) A 
+LEFT JOIN (SELECT T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID,SUM(T.AMOUNT) AM, SUM(t.CNT) CT FROM T_STA_DAILY T  WHERE T.ORDER_STATUS = 2 AND T.DEC_STATUS = 0 GROUP BY T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID) B 
+ON(A.COMP_DATE = B.COMP_DATE AND A.PIPLE_ID = B.PIPLE_ID AND A.CHANNEL_ID = B.CHANNEL_ID ) 
+LEFT JOIN (SELECT T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID,SUM(T.AMOUNT) AM, SUM(t.CNT) CT FROM T_STA_DAILY T  WHERE T.ORDER_STATUS = 2 AND T.DEC_STATUS = 1 GROUP BY T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID) C 
+ON(A.COMP_DATE = C.COMP_DATE AND A.PIPLE_ID = C.PIPLE_ID AND A.CHANNEL_ID = C.CHANNEL_ID )
+LEFT JOIN (SELECT T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID, SUM(T.AMOUNT) AM, SUM(t.CNT) CT FROM T_STA_DAILY T  WHERE T.ORDER_STATUS IN (0,1)  GROUP BY T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID) D 
+ON(A.COMP_DATE = D.COMP_DATE AND A.PIPLE_ID = D.PIPLE_ID AND A.CHANNEL_ID = D.CHANNEL_ID ) 
+LEFT JOIN (SELECT T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID, SUM(T.AMOUNT) AM, SUM(t.CNT) CT FROM T_STA_DAILY T  WHERE T.ORDER_STATUS = 3  GROUP BY T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID) E 
+ON(A.COMP_DATE = E.COMP_DATE AND A.PIPLE_ID = E.PIPLE_ID AND A.CHANNEL_ID = E.CHANNEL_ID )
+<if test="param.pipleId == null or param.channelId != null">
+inner join T_PIPLE F on A.PIPLE_ID = F.PIPLE_ID 
+ </if>
+, 
+T_PIPLE T2, T_CHANNEL T3 WHERE A.PIPLE_ID = T2.PIPLE_ID AND A.CHANNEL_ID = T3.CHANNEL_ID 
+ <if test="param.startDate != null" > 
+AND A.COMP_DATE &gt;= #{param.startDate,jdbcType=DATE}
+ </if> 
+ <if test="param.endDate != null" >
+AND A.COMP_DATE &lt;= #{param.endDate,jdbcType=DATE}
+ </if>
+<if test="param.pipleId != null" >
+AND A.PIPLE_ID = #{param.pipleId,jdbcType=VARCHAR}
+ </if>
+<if test="param.channelId != null" >
+AND A.CHANNEL_ID = #{param.channelId,jdbcType=VARCHAR}
+ </if>
+ <if test="param.pipleNumber != null" >
+AND T2.PIPLE_NUMBER = #{param.pipleNumber,jdbcType=VARCHAR}
+ </if>
+<if test="!pipleIds.isEmpty() or  !channelIds.isEmpty()"> 
+ <if test="!pipleIds.isEmpty()">
+ 	AND (A.PIPLE_ID in
+ <foreach collection="pipleIds" item = "pipleId" open="(" separator="," close=")">  
+	#{pipleId}
+ </foreach>
+ </if>
+ <if test="pipleIds.isEmpty()">
+     AND  (A.PIPLE_ID IS NULL
+ </if>
+ <if test="!channelIds.isEmpty()">
+ 	OR A.CHANNEL_ID in 
+ <foreach collection="channelIds" item = "channelId" open="(" separator="," close=")">  
+	#{channelId}
+ </foreach>
+ )
+ </if>
+ <if test="channelIds.isEmpty()">
+    	OR A.CHANNEL_ID IS NULL)
+ </if>
+ </if>
+ORDER BY A.COMP_DATE,T2.PIPLE_NUMBER,A.PIPLE_ID, A.CHANNEL_ID DESC
+  </select>
+  
+  
+  <select id="getRunDataForProvince" resultMap="BaseResultMap">
+       SELECT A.COMP_DATE,T2.PIPLE_NUMBER, T2.PIPLE_NAME,T3.FULL_NAME CHANNEL_NAME,T4.PROVINCE_NAME, IF(A.AM IS NULL, 0, A.AM) AMTOTAL,IF(A.CT IS NULL, 0, A.CT)  CTTOTAL,
+ IF(D.AM IS NULL, 0, D.AM) AMW,IF(D.CT IS NULL, 0, D.CT) CTW,IF(E.AM IS NULL, 0, E.AM) AMF,IF(E.CT IS NULL, 0, E.CT) CTF,IF(B.AM IS NULL, 0, B.AM) AMCH,
+ IF(B.CT IS NULL, 0, B.CT) CTCH,IF(C.AM IS NULL, 0, C.AM)  AMDEC,IF(C.CT IS NULL, 0, C.CT) CTDEC FROM 
+(SELECT T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID,T.PROVINCE_ID, SUM(T.AMOUNT) AM, SUM(t.CNT) CT FROM T_STA_DAILY T  GROUP BY T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID,T.PROVINCE_ID) A 
+LEFT JOIN (SELECT T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID,T.PROVINCE_ID, SUM(T.AMOUNT) AM, SUM(t.CNT) CT FROM T_STA_DAILY T  WHERE T.ORDER_STATUS = 2 AND T.DEC_STATUS = 0 GROUP BY T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID,T.PROVINCE_ID) B 
+ON(A.COMP_DATE = B.COMP_DATE AND A.PIPLE_ID = B.PIPLE_ID AND A.CHANNEL_ID = B.CHANNEL_ID AND A.PROVINCE_ID = B.PROVINCE_ID) 
+LEFT JOIN (SELECT T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID,T.PROVINCE_ID, SUM(T.AMOUNT) AM, SUM(t.CNT) CT FROM T_STA_DAILY T  WHERE T.ORDER_STATUS = 2 AND T.DEC_STATUS = 1 GROUP BY T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID,T.PROVINCE_ID) C 
+ON(A.COMP_DATE = C.COMP_DATE AND A.PIPLE_ID = C.PIPLE_ID AND A.CHANNEL_ID = C.CHANNEL_ID AND A.PROVINCE_ID = C.PROVINCE_ID)
+LEFT JOIN (SELECT T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID,T.PROVINCE_ID, SUM(T.AMOUNT) AM, SUM(t.CNT) CT FROM T_STA_DAILY T  WHERE T.ORDER_STATUS IN (0,1)  GROUP BY T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID,T.PROVINCE_ID) D 
+ON(A.COMP_DATE = D.COMP_DATE AND A.PIPLE_ID = D.PIPLE_ID AND A.CHANNEL_ID = D.CHANNEL_ID AND A.PROVINCE_ID = D.PROVINCE_ID) 
+LEFT JOIN (SELECT T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID,T.PROVINCE_ID, SUM(T.AMOUNT) AM, SUM(t.CNT) CT FROM T_STA_DAILY T  WHERE T.ORDER_STATUS = 3  GROUP BY T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID,T.PROVINCE_ID) E 
+ON(A.COMP_DATE = E.COMP_DATE AND A.PIPLE_ID = E.PIPLE_ID AND A.CHANNEL_ID = E.CHANNEL_ID AND A.PROVINCE_ID = E.PROVINCE_ID)
+ <if test="param.pipleId == null or param.channelId != null">
+  inner join T_PIPLE F on A.PIPLE_ID = F.PIPLE_ID 
+ </if>
+, 
+T_PIPLE T2, T_CHANNEL T3,t_province T4 WHERE A.PIPLE_ID = T2.PIPLE_ID AND A.CHANNEL_ID = T3.CHANNEL_ID AND A.PROVINCE_ID = T4.PROVINCE_ID
+ <if test="param.startDate != null" > 
+AND A.COMP_DATE &gt;= #{param.startDate,jdbcType=DATE}
+ </if> 
+ <if test="param.endDate != null" >
+AND A.COMP_DATE &lt;= #{param.endDate,jdbcType=DATE}
+ </if>
+<if test="param.pipleId != null" >
+AND A.PIPLE_ID = #{param.pipleId,jdbcType=VARCHAR}
+ </if>
+<if test="param.channelId != null" >
+AND A.CHANNEL_ID = #{param.channelId,jdbcType=VARCHAR}
+ </if>
+ <if test="param.pipleNumber != null" >
+AND T2.PIPLE_NUMBER = #{param.pipleNumber,jdbcType=VARCHAR}
+ </if>
+<if test="!pipleIds.isEmpty() or  !channelIds.isEmpty()"> 
+ <if test="!pipleIds.isEmpty()">
+ 	AND (A.PIPLE_ID in
+ <foreach collection="pipleIds" item = "pipleId" open="(" separator="," close=")">  
+	#{pipleId}
+ </foreach>
+ </if>
+ <if test="pipleIds.isEmpty()">
+     AND  (A.PIPLE_ID IS NULL
+ </if>
+ <if test="!channelIds.isEmpty()">
+ 	OR A.CHANNEL_ID in 
+ <foreach collection="channelIds" item = "channelId" open="(" separator="," close=")">  
+	#{channelId}
+ </foreach>
+  )
+ </if>
+ <if test="channelIds.isEmpty()">
+    	OR A.CHANNEL_ID IS NULL ) 
+ </if>
+ </if>
+ORDER BY A.COMP_DATE,T2.PIPLE_NUMBER,A.PIPLE_ID, A.CHANNEL_ID,A.PROVINCE_ID DESC
+  </select>
+  
+  
+  <select id="selectByNormal" resultMap="BaseResultMap" parameterType="com.qy.sp.manage.entity.param.StaticCommonQueryParam" >
+    SELECT A.COMP_DATE, T2.PIPLE_NUMBER,T2.PIPLE_NAME,T3.FULL_NAME CHANNEL_NAME, A.AM AMTOTAL, A.CT CTTOTAL, B.AM AMCH, B.CT CTCH, C.AM AMDEC, C.CT CTDEC FROM 
+(SELECT T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID, SUM(T.AMOUNT) AM, COUNT(1) CT FROM T_STA_DAILY T  GROUP BY T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID) A LEFT JOIN
+(SELECT T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID, SUM(T.AMOUNT) AM, COUNT(1) CT FROM T_STA_DAILY T  WHERE T.ORDER_STATUS = 2 AND T.DEC_STATUS = 0 GROUP BY T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID) B ON(A.COMP_DATE = B.COMP_DATE AND A.PIPLE_ID = B.PIPLE_ID AND A.CHANNEL_ID = B.CHANNEL_ID) LEFT JOIN 
+(SELECT T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID, SUM(T.AMOUNT) AM, COUNT(1) CT FROM T_STA_DAILY T  WHERE T.ORDER_STATUS = 2 AND T.DEC_STATUS = 1 GROUP BY T.COMP_DATE, T.PIPLE_ID, T.CHANNEL_ID) C ON(A.COMP_DATE = C.COMP_DATE AND A.PIPLE_ID = C.PIPLE_ID AND A.CHANNEL_ID = C.CHANNEL_ID)
+ <if test="param.pipleId == null or param.channelId != null">
+ inner join T_PIPLE F on A.PIPLE_ID = F.PIPLE_ID 
+ </if>
+,
+T_PIPLE T2, T_CHANNEL T3 , T_USER_PIPLE t4, T_USER_CHANNEL T5 WHERE A.PIPLE_ID = T2.PIPLE_ID AND A.CHANNEL_ID = T3.CHANNEL_ID AND T2.PIPLE_ID = T4.PIPLE_ID AND T3.CHANNEL_ID = T5.CHANNEL_ID 
+AND T4.USER_ID = #{userId,jdbcType=VARCHAR} AND T5.USER_ID = #{userId,jdbcType=VARCHAR}
+ <if test="param.startDate != null" > 
+AND A.COMP_DATE &gt;= #{param.startDate,jdbcType=DATE}
+ </if> 
+ <if test="param.endDate != null" >
+AND A.COMP_DATE &lt;= #{param.endDate,jdbcType=DATE}
+ </if>
+<if test="param.pipleId != null" >
+AND A.PIPLE_ID = #{param.pipleId,jdbcType=VARCHAR}
+ </if>
+<if test="param.channelId != null" >
+AND A.CHANNEL_ID = #{param.channelId,jdbcType=VARCHAR}
+ </if>
+ <if test="param.pipleNumber != null" >
+AND T2.PIPLE_NUMBER = #{param.pipleNumber,jdbcType=VARCHAR}
+ </if>
+<if test="!pipleIds.isEmpty() or  !channelIds.isEmpty()"> 
+<if test="!pipleIds.isEmpty()">
+ 	AND (AND A.PIPLE_ID in
+ <foreach collection="pipleIds" item = "pipleId" open="(" separator="," close=")">  
+	#{pipleId}
+ </foreach>
+ </if>
+ <if test="pipleIds.isEmpty() ">
+     AND (A.PIPLE_ID IS NULL	
+ </if>
+ <if test="!channelIds.isEmpty() ">
+ 	OR A.CHANNEL_ID in
+ <foreach collection="channelIds" item = "channelId" open="(" separator="," close=")">  
+	#{channelId}
+ </foreach>
+ 	)
+ </if>
+ <if test="channelIds.isEmpty()">
+   OR A.CHANNEL_ID IS NULL )
+ </if>
+ </if>
+ORDER BY A.COMP_DATE, T2.PIPLE_NUMBER,A.PIPLE_ID, A.CHANNEL_ID    
+  </select>
+  
+  <select id="getDayRunData" resultMap="DayRunResultMap" parameterType="com.qy.sp.manage.entity.param.StaticCommonQueryParam" >
+   SELECT G.PIPLE_NUMBER,G.PIPLE_NAME,H.FULL_NAME  CHANNEL_NAME,A.PRODUCT_ID,A.AM AMTOTAL,B.AM  UNAMTOTAL,C.AM NUAMTOTAL,D.AM FAMTOTAL,E.AM SAMTOTAL,(E.AM - IF(F.AM IS NULL, 0, F.AM)) CAMTOTAL,F.AM DAMTOTAL,E.CT/A.CT RPD,(E.CT-IF(F.CT IS NULL,0,F.CT))/A.CT RD
+FROM (SELECT T.PIPLE_ID,T.CHANNEL_ID,T.PRODUCT_ID,SUM(T.AMOUNT) AM,COUNT(*) CT FROM t_order T WHERE TO_DAYS(T.CREATE_TIME) = TO_DAYS(NOW())   GROUP BY DATE(T.CREATE_TIME),T.PIPLE_ID, T.CHANNEL_ID,T.PRODUCT_ID ) A   
+LEFT JOIN (SELECT T.PIPLE_ID,T.CHANNEL_ID,T.PRODUCT_ID,SUM(T.AMOUNT) AM,COUNT(*)  CT FROM t_order T WHERE TO_DAYS(T.CREATE_TIME) = TO_DAYS(NOW()) AND  T.ORDER_STATUS = 0 GROUP BY DATE(T.CREATE_TIME),T.PIPLE_ID, T.CHANNEL_ID,T.PRODUCT_ID) B
+ ON (A.PIPLE_ID = B.PIPLE_ID AND A.CHANNEL_ID = B.CHANNEL_ID AND A.PRODUCT_ID = B.PRODUCT_ID)
+LEFT JOIN (SELECT T.PIPLE_ID,T.CHANNEL_ID,T.PRODUCT_ID,SUM(T.AMOUNT)  AM,COUNT(*)  CT FROM t_order T WHERE TO_DAYS(T.CREATE_TIME) = TO_DAYS(NOW()) AND T.ORDER_STATUS = 1 GROUP BY DATE(T.CREATE_TIME),T.PIPLE_ID, T.CHANNEL_ID,T.PRODUCT_ID) C
+ ON (A.PIPLE_ID = C.PIPLE_ID AND A.CHANNEL_ID = C.CHANNEL_ID AND A.PRODUCT_ID = C.PRODUCT_ID)
+LEFT JOIN (SELECT T.PIPLE_ID,T.CHANNEL_ID, T.PRODUCT_ID,SUM(T.AMOUNT)  AM,COUNT(*)  CT FROM t_order T WHERE TO_DAYS(T.CREATE_TIME) = TO_DAYS(NOW()) AND T.ORDER_STATUS = 3 GROUP BY DATE(T.CREATE_TIME),T.PIPLE_ID, T.CHANNEL_ID,T.PRODUCT_ID) D
+ ON (A.PIPLE_ID = D.PIPLE_ID AND A.CHANNEL_ID = D.CHANNEL_ID AND A.PRODUCT_ID = D.PRODUCT_ID)
+LEFT JOIN (SELECT T.PIPLE_ID,T.CHANNEL_ID, T.PRODUCT_ID,SUM(T.AMOUNT)   AM,COUNT(*)  CT FROM t_order T WHERE TO_DAYS(T.CREATE_TIME) = TO_DAYS(NOW()) AND T.ORDER_STATUS = 2 GROUP BY DATE(T.CREATE_TIME),T.PIPLE_ID, T.CHANNEL_ID,T.PRODUCT_ID) E
+ ON (A.PIPLE_ID = E.PIPLE_ID AND A.CHANNEL_ID = E.CHANNEL_ID AND A.PRODUCT_ID = E.PRODUCT_ID)
+LEFT JOIN (SELECT T.PIPLE_ID, T.CHANNEL_ID, T.PRODUCT_ID,SUM(T.AMOUNT)  AM,COUNT(*)  CT FROM t_order T WHERE TO_DAYS(T.CREATE_TIME) = TO_DAYS(NOW()) AND T.ORDER_STATUS = 2 AND T.DEC_STATUS = 1 GROUP BY DATE(T.CREATE_TIME),T.PIPLE_ID, T.CHANNEL_ID,T.PRODUCT_ID) F
+ ON (A.PIPLE_ID = F.PIPLE_ID AND A.CHANNEL_ID = F.CHANNEL_ID AND A.PRODUCT_ID = F.PRODUCT_ID)
+LEFT JOIN (SELECT T.PIPLE_ID,T.PIPLE_NUMBER,T.PIPLE_NAME FROM T_PIPLE T ) G ON (A.PIPLE_ID = G.PIPLE_ID)
+LEFT JOIN (SELECT T.CHANNEL_ID,T.FULL_NAME FROM T_CHANNEL T) H ON (A.CHANNEL_ID = H.CHANNEL_ID) 
+ <if test="param.pipleId == null or param.channelId != null">
+  inner join T_PIPLE I on A.PIPLE_ID = I.PIPLE_ID 
+ </if>
+WHERE 1=1 
+<if test="param.pipleId != null" >
+AND A.PIPLE_ID = #{param.pipleId,jdbcType=VARCHAR}
+ </if>
+<if test="param.channelId != null" >
+AND A.CHANNEL_ID = #{param.channelId,jdbcType=VARCHAR}
+ </if>
+  <if test="param.pipleNumber != null" >
+AND T2.PIPLE_NUMBER = #{param.pipleNumber,jdbcType=VARCHAR}
+ </if>
+<if test="!pipleIds.isEmpty() or  !channelIds.isEmpty()"> 
+ <if test="!pipleIds.isEmpty()">
+ 	AND (A.PIPLE_ID in
+ <foreach collection="pipleIds" item = "pipleId" open="(" separator="," close=")">  
+	#{pipleId}
+ </foreach>
+ </if>
+ <if test="pipleIds.isEmpty() ">
+    	AND (A.PIPLE_ID IS NULL
+ </if>
+ <if test="!channelIds.isEmpty() ">
+ 	OR A.CHANNEL_ID in
+ <foreach collection="channelIds" item = "channelId" open="(" separator="," close=")">  
+	#{channelId}
+ </foreach>
+  )
+ </if>
+ <if test="channelIds.isEmpty()">
+    	 OR A.CHANNEL_ID IS NULL )
+ </if>
+ </if>
+</select>
+  
+  <select id="selectSalesDailyByAdmin" resultMap="SalesResultMap" parameterType="com.qy.sp.manage.entity.param.StaticCommonQueryParam">
+  SELECT a.COMP_DATE,a.PIPLE_NUMBER,a.PIPLE_NAME,a.CHANNEL_NAME,a.DECSTATUS,a.OSTATUS,a.AMOUNTT,a.COUNTT,a.PIPLE_SETRATIO,b.CHANNEL_SETRATIO
+  FROM
+  (SELECT s.COMP_DATE,p.PIPLE_ID,p.PIPLE_NUMBER,p.PIPLE_NAME,p.SETTLEMENT_RATIO PIPLE_SETRATIO ,c.CHANNEL_ID,c.full_name CHANNEL_NAME,s.dec_status DECSTATUS,s.order_status OSTATUS,SUM(s.amount) AS AMOUNTT,SUM(s.cnt) AS COUNTT 
+  FROM t_sta_daily s, t_piple p, t_channel c
+  WHERE s.piple_id=p.piple_id AND s.channel_id=c.channel_id
+ <if test="param.startDate != null" > 
+AND s.COMP_DATE &gt;= #{param.startDate,jdbcType=DATE}
+ </if> 
+ <if test="param.endDate != null" >
+AND s.COMP_DATE &lt;= #{param.endDate,jdbcType=DATE}
+ </if>
+<if test="param.pipleId != null" >
+AND p.PIPLE_ID = #{param.pipleId,jdbcType=VARCHAR}
+ </if>
+<if test="param.channelId != null" >
+AND c.CHANNEL_ID = #{param.channelId,jdbcType=VARCHAR}
+ </if>
+<if test="param.pipleNumber != null" >
+AND p.PIPLE_NUMBER = #{param.pipleNumber,jdbcType=VARCHAR}
+ </if>
+<if test="!pipleIds.isEmpty() or  !channelIds.isEmpty()"> 
+  <if test="!pipleIds.isEmpty()">
+ 	AND (p.PIPLE_ID in
+ <foreach collection="pipleIds" item = "pipleId" open="(" separator="," close=")">  
+	#{pipleId}
+ </foreach>
+ </if>
+ <if test="pipleIds.isEmpty()">
+    	AND  (p.PIPLE_ID IS NULL
+ </if>
+ <if test="!channelIds.isEmpty()">
+ 	OR c.CHANNEL_ID in
+ <foreach collection="channelIds" item = "channelId" open="(" separator="," close=")">  
+	#{channelId}
+ </foreach>
+  	)
+ </if>
+ <if test="channelIds.isEmpty()">
+    	OR c.CHANNEL_ID IS NULL)
+ </if>
+ </if>
+GROUP BY s.COMP_DATE,p.PIPLE_ID,c.CHANNEL_ID,s.dec_status,s.order_status
+ORDER BY s.comp_date) a
+LEFT JOIN (SELECT t.PIPLE_ID,t.CHANNEL_ID,t.SETTLEMENT_RATIO CHANNEL_SETRATIO FROM  t_channel_piple t ) b ON (a.PIPLE_ID = b.PIPLE_ID AND a.CHANNEL_ID = b.CHANNEL_ID)
+ <if test="param.pipleId == null or param.channelId != null">
+inner join T_PIPLE F on A.PIPLE_ID = F.PIPLE_ID
+ </if>
+  </select>
+  
+  
+</mapper>

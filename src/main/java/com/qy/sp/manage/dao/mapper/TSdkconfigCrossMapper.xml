@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.SdkconfigCrossDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TSdkconfigCross" >
+    <id column="CONFIG_ID" property="configId" jdbcType="VARCHAR" />
+    <id column="APP_ID" property="appId" jdbcType="VARCHAR" />
+    <id column="CHANNEL_ID" property="channelId" jdbcType="VARCHAR" />
+    <id column="PROVINCE_ID" property="provinceId" jdbcType="VARCHAR" />
+    <id column="PIPLE_ID" property="pipleId" jdbcType="VARCHAR" />
+    <result column="CONFIG_VALUE" property="configValue" jdbcType="VARCHAR" />
+    <result column="APP_NAME" property="appName" jdbcType="VARCHAR" />
+    <result column="CHANNEL_NAME" property="channelName" jdbcType="VARCHAR" />
+    <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+    <result column="API_KEY" property="apiKey" jdbcType="VARCHAR" />
+    <result column="PIPLE_NUMBER" property="pipleNumber" jdbcType="VARCHAR" />
+    <result column="PIPLE_NAME" property="pipleName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CONFIG_ID, APP_ID, CHANNEL_ID, PROVINCE_ID, PIPLE_ID,CONFIG_VALUE
+  </sql>
+  
+  <select id="getSdkConfigCrossList" resultMap="BaseResultMap">
+    SELECT 
+	t1.CONFIG_ID, t1.APP_ID, t1.CHANNEL_ID, t1.PROVINCE_ID, t1.PIPLE_ID,t1.CONFIG_VALUE,t2.APP_NAME,t3.FULL_NAME CHANNEL_NAME,t4.PROVINCE_NAME,
+	t3.API_KEY,t5.PIPLE_NUMBER,t5.PIPLE_NAME
+	FROM
+	(SELECT
+	  CONFIG_ID, APP_ID, CHANNEL_ID, PROVINCE_ID,PIPLE_ID, CONFIG_VALUE
+	FROM t_sdkconfig_cross) t1
+	LEFT JOIN (SELECT APP_ID,APP_NAME FROM t_sdk_app ) t2 
+	ON (t1.APP_ID = t2.APP_ID)
+	LEFT JOIN (SELECT CHANNEL_ID,FULL_NAME,API_KEY FROM t_channel) t3
+	ON (t1.CHANNEL_ID = t3.CHANNEL_ID)
+	LEFT JOIN (SELECT PROVINCE_ID,PROVINCE_NAME FROM t_province) t4
+	ON (t1.PROVINCE_ID = t4.PROVINCE_ID)
+	LEFT JOIN (SELECT PIPLE_ID,PIPLE_NUMBER,PIPLE_NAME FROM t_piple) t5
+	ON (t1.PIPLE_ID = t5.PIPLE_ID)
+	WHERE 1=1
+	<if test="sdkconfigCross.appId != null and sdkconfigCross.appId != ''" >
+       AND (t1.APP_ID = #{sdkconfigCross.appId} OR t1.APP_ID IS NULL OR t1.APP_ID = '')
+    </if>
+    <if test="sdkconfigCross.channelId != null and sdkconfigCross.channelId != ''" >
+       AND (t1.CHANNEL_ID = #{sdkconfigCross.channelId} OR t1.CHANNEL_ID IS NULL OR t1.CHANNEL_ID = '')
+    </if>
+     <if test="sdkconfigCross.provinceId != null and sdkconfigCross.provinceId != ''" >
+       AND (t1.PROVINCE_ID = #{sdkconfigCross.provinceId} OR t1.PROVINCE_ID IS NULL OR t1.PROVINCE_ID = '') 
+    </if>
+    <if test="sdkconfigCross.pipleId != null and sdkconfigCross.pipleId != ''" >
+       AND (t1.PIPLE_ID = #{sdkconfigCross.pipleId} OR t1.PIPLE_ID IS NULL OR t1.PIPLE_ID = '') 
+    </if>
+     <if test="sdkconfigCross.configId != null and sdkconfigCross.configId != ''" >
+       AND t1.CONFIG_ID = #{sdkconfigCross.configId}
+    </if>
+	   LIMIT #{start},#{end}
+  </select>
+  
+  <select id="getSdkConfigCrossItems" resultType="java.lang.Integer" parameterType="com.qy.sp.manage.dto.TSdkconfigCross">
+    SELECT count(*) FROM t_sdkconfig_cross 
+	WHERE 1=1 
+	<if test="appId != null and appId != ''" >
+      AND (APP_ID = #{appId,jdbcType=VARCHAR} OR APP_ID IS NULL OR APP_ID = '')
+    </if>
+    <if test="channelId != null and channelId != ''" >
+      AND (CHANNEL_ID = #{channelId,jdbcType=VARCHAR} OR CHANNEL_ID IS NULL OR CHANNEL_ID = '')
+    </if>
+     <if test="provinceId != null and provinceId != ''" >
+       AND (PROVINCE_ID = #{provinceId,jdbcType=VARCHAR} OR PROVINCE_ID IS NULL OR PROVINCE_ID = '')
+    </if>
+      <if test="pipleId != null and pipleId != ''" >
+       AND (PIPLE_ID = #{pipleId,jdbcType=VARCHAR} OR PIPLE_ID IS NULL OR PIPLE_ID = '')
+    </if>
+    <if test="configId != null and configId != ''" >
+       AND CONFIG_ID = #{configId,jdbcType=VARCHAR}
+    </if>
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.qy.sp.manage.dto.TSdkconfigCrossKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sdkconfig_cross
+    where CONFIG_ID = #{configId,jdbcType=VARCHAR}
+      and APP_ID = #{appId,jdbcType=VARCHAR}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=VARCHAR}
+      and PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.qy.sp.manage.dto.TSdkconfigCrossKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sdkconfig_cross
+    where 1=1
+     <if test="configId != null and configId != ''" >
+      AND　CONFIG_ID = #{configId,jdbcType=VARCHAR}
+      </if>
+     <if test="appId != null and appId != ''" >
+       and APP_ID = #{appId,jdbcType=VARCHAR}
+      </if>
+     <if test="channelId != null and channelId != ''" >
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      </if>
+     <if test="provinceId != null and provinceId != ''" >
+       and PROVINCE_ID = #{provinceId,jdbcType=VARCHAR}
+      </if>
+     <if test="pipleId != null and pipleId != ''" >
+      and PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+      </if>
+  </select>
+  
+  <select id="getByPrimaryKeyForCheck" resultMap="BaseResultMap" parameterType="com.qy.sp.manage.dto.TSdkconfigCrossKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sdkconfig_cross
+    where 1=1
+    <if test="appId != null and appId != ''" >
+       AND (APP_ID = #{appId,jdbcType=VARCHAR} OR APP_ID IS NULL OR APP_ID = '')
+    </if>
+    <if test="channelId != null and channelId != ''" >
+       AND (CHANNEL_ID = #{channelId,jdbcType=VARCHAR} OR CHANNEL_ID IS NULL OR CHANNEL_ID = '')
+    </if>
+     <if test="provinceId != null and provinceId != ''" >
+       AND (PROVINCE_ID = #{provinceId,jdbcType=VARCHAR} OR PROVINCE_ID IS NULL OR PROVINCE_ID = '')
+    </if>
+    <if test="pipleId != null and pipleId != ''" >
+       AND (PIPLE_ID = #{pipleId,jdbcType=VARCHAR} OR PIPLE_ID IS NULL OR PIPLE_ID = '')
+    </if>
+    <if test="configId != null and configId != ''" >
+       AND CONFIG_ID = #{configId,jdbcType=VARCHAR}
+    </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="com.qy.sp.manage.dto.TSdkconfigCrossKey" >
+    delete from t_sdkconfig_cross
+    where CONFIG_ID = #{configId,jdbcType=VARCHAR}
+      and APP_ID = #{appId,jdbcType=VARCHAR}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=VARCHAR}
+      and PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByConfigId" parameterType="java.lang.String" >
+    delete from t_sdkconfig_cross
+    where CONFIG_ID = #{configId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TSdkconfigCross" >
+    insert into t_sdkconfig_cross (CONFIG_ID, APP_ID, CHANNEL_ID, 
+      PROVINCE_ID, PIPLE_ID,CONFIG_VALUE)
+    values (#{configId,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{channelId,jdbcType=VARCHAR}, 
+      #{provinceId,jdbcType=VARCHAR}, #{pipleId,jdbcType=VARCHAR},#{configValue,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TSdkconfigCross" >
+    insert into t_sdkconfig_cross
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="configId != null" >
+        CONFIG_ID,
+      </if>
+      <if test="appId != null" >
+        APP_ID,
+      </if>
+      <if test="channelId != null" >
+        CHANNEL_ID,
+      </if>
+      <if test="provinceId != null" >
+        PROVINCE_ID,
+      </if>
+      <if test="pipleId != null" >
+        PIPLE_ID,
+      </if>
+      <if test="configValue != null" >
+        CONFIG_VALUE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="configId != null" >
+        #{configId,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null" >
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null" >
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null" >
+        #{provinceId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleId != null" >
+        #{pipleId,jdbcType=VARCHAR},
+      </if>
+      <if test="configValue != null" >
+        #{configValue,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TSdkconfigCross" >
+    update t_sdkconfig_cross
+    <set >
+      <if test="configValue != null" >
+        CONFIG_VALUE = #{configValue,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where CONFIG_ID = #{configId,jdbcType=VARCHAR}
+      and APP_ID = #{appId,jdbcType=VARCHAR}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=VARCHAR}
+      and PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TSdkconfigCross" >
+    update t_sdkconfig_cross
+    set CONFIG_VALUE = #{configValue,jdbcType=VARCHAR}
+    where CONFIG_ID = #{configId,jdbcType=VARCHAR}
+      and APP_ID = #{appId,jdbcType=VARCHAR}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=VARCHAR}
+      and PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.ModuleDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TModule" >
+    <id column="MODULE_ID" property="moduleId" jdbcType="VARCHAR" />
+    <result column="MODULE_CODE" property="moduleCode" jdbcType="VARCHAR" />
+    <result column="PARENT_M_ID" property="parentMId" jdbcType="VARCHAR" />
+    <result column="MODULE_NAME" property="moduleName" jdbcType="VARCHAR" />
+    <result column="MODULE_LINK" property="moduleLink" jdbcType="VARCHAR" />
+    <result column="MODULE_DESC" property="moduleDesc" jdbcType="VARCHAR" />
+    <result column="MODULE_LEVEL" property="moduleLevel" jdbcType="INTEGER" />
+    <result column="SHOW_SEQ" property="showSeq" jdbcType="INTEGER" />
+    <result column="MODULE_TYPE" property="moduleType" jdbcType="INTEGER" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="CREATOR" property="creator" jdbcType="VARCHAR" />
+    <result column="ENABLE_TIME" property="enableTime" jdbcType="TIMESTAMP" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="SHOW_TYPE" property="showType" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    MODULE_ID, MODULE_CODE, PARENT_M_ID, MODULE_NAME, MODULE_LINK, MODULE_DESC, MODULE_LEVEL, 
+    SHOW_SEQ, MODULE_TYPE, CREATE_TIME, CREATOR, ENABLE_TIME, STATUS,SHOW_TYPE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_module
+    where MODULE_ID = #{moduleId,jdbcType=VARCHAR}
+  </select>
+  <select id="loadModuleLimit" resultMap="BaseResultMap">
+  		SELECT MODULE_ID,MODULE_LEVEL,MODULE_NAME,MODULE_LINK,MODULE_DESC,PARENT_M_ID,MODULE_TYPE,
+  		STATUS,MODULE_TYPE,SHOW_TYPE FROM T_MODULE  WHERE 1=1
+	  <if test="module.moduleName != null" >
+        AND MODULE_NAME LIKE "%"#{module.moduleName}"%"
+      </if>
+      <if test="module.moduleType != 0" >
+        AND MODULE_TYPE = #{module.moduleType}
+      </if>
+	   ORDER BY MODULE_LEVEL ASC
+	   LIMIT #{start},#{end}
+  </select>
+  <select id="loadItems" resultType="java.lang.Integer" >
+    select count(*) from t_module
+  </select>
+  <select id="getModuleByUserId" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	SELECT B.MODULE_ID AS MODULE_ID,B.MODULE_CODE AS MODULE_CODE,B.PARENT_M_ID AS PARENT_M_ID,
+  	B.MODULE_NAME AS MODULE_NAME,B.MODULE_LINK AS MODULE_LINK,B.MODULE_DESC AS MODULE_DESC,B.MODULE_LEVEL AS MODULE_LEVEL, 
+    B.SHOW_SEQ AS SHOW_SEQ,B.MODULE_TYPE AS MODULE_TYPE,B.CREATE_TIME AS CREATE_TIME,B.CREATOR AS CREATOR,B.ENABLE_TIME AS ENABLE_TIME,B.STATUS AS STATUS,
+    B.SHOW_TYPE AS SHOW_TYPE
+    FROM T_MODULE B WHERE 
+  	EXISTS(SELECT * FROM T_ROLE_MODULE A, T_USER_ROLE C 
+  	WHERE A.MODULE_ID = B.MODULE_ID AND A.ROLE_ID = C.ROLE_ID AND C.USER_ID = #{userId,jdbcType=VARCHAR}) 
+  	ORDER BY B.SHOW_SEQ ASC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_module
+    where MODULE_ID = #{moduleId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteModuleByParentId" parameterType="java.lang.String" >
+    delete from t_module
+    where MODULE_ID = #{parentMId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TModule" >
+    insert into t_module (MODULE_ID, MODULE_CODE, PARENT_M_ID, 
+      MODULE_NAME, MODULE_LINK, MODULE_DESC, 
+      MODULE_LEVEL, SHOW_SEQ, MODULE_TYPE, 
+      CREATE_TIME, CREATOR, ENABLE_TIME, 
+      STATUS,SHOW_TYPE)
+    values (#{moduleId,jdbcType=VARCHAR}, #{moduleCode,jdbcType=VARCHAR}, #{parentMId,jdbcType=VARCHAR}, 
+      #{moduleName,jdbcType=VARCHAR}, #{moduleLink,jdbcType=VARCHAR}, #{moduleDesc,jdbcType=VARCHAR}, 
+      #{moduleLevel,jdbcType=INTEGER}, #{showSeq,jdbcType=INTEGER}, #{moduleType,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, #{enableTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER},#{showType,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TModule" >
+    insert into t_module
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="moduleId != null" >
+        MODULE_ID,
+      </if>
+      <if test="moduleCode != null" >
+        MODULE_CODE,
+      </if>
+      <if test="parentMId != null" >
+        PARENT_M_ID,
+      </if>
+      <if test="moduleName != null" >
+        MODULE_NAME,
+      </if>
+      <if test="moduleLink != null" >
+        MODULE_LINK,
+      </if>
+      <if test="moduleDesc != null" >
+        MODULE_DESC,
+      </if>
+      <if test="moduleLevel != null" >
+        MODULE_LEVEL,
+      </if>
+      <if test="showSeq != null" >
+        SHOW_SEQ,
+      </if>
+      <if test="moduleType != null" >
+        MODULE_TYPE,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="creator != null" >
+        CREATOR,
+      </if>
+      <if test="enableTime != null" >
+        ENABLE_TIME,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="showType != null" >
+        SHOW_TYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="moduleId != null" >
+        #{moduleId,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleCode != null" >
+        #{moduleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentMId != null" >
+        #{parentMId,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleName != null" >
+        #{moduleName,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleLink != null" >
+        #{moduleLink,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleDesc != null" >
+        #{moduleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleLevel != null" >
+        #{moduleLevel,jdbcType=INTEGER},
+      </if>
+      <if test="showSeq != null" >
+        #{showSeq,jdbcType=INTEGER},
+      </if>
+      <if test="moduleType != null" >
+        #{moduleType,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="enableTime != null" >
+        #{enableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="showType != null" >
+        #{showType,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TModule" >
+    update t_module
+    <set >
+      <if test="moduleCode != null" >
+        MODULE_CODE = #{moduleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentMId != null" >
+        PARENT_M_ID = #{parentMId,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleName != null" >
+        MODULE_NAME = #{moduleName,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleLink != null" >
+        MODULE_LINK = #{moduleLink,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleDesc != null" >
+        MODULE_DESC = #{moduleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleLevel != null" >
+        MODULE_LEVEL = #{moduleLevel,jdbcType=INTEGER},
+      </if>
+      <if test="showSeq != null" >
+        SHOW_SEQ = #{showSeq,jdbcType=INTEGER},
+      </if>
+      <if test="moduleType != null" >
+        MODULE_TYPE = #{moduleType,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null" >
+        CREATOR = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="enableTime != null" >
+        ENABLE_TIME = #{enableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="showType != null" >
+        SHOW_TYPE = #{showType,jdbcType=INTEGER},
+      </if>
+    </set>
+    where MODULE_ID = #{moduleId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TModule" >
+    update t_module
+    set MODULE_CODE = #{moduleCode,jdbcType=VARCHAR},
+      PARENT_M_ID = #{parentMId,jdbcType=VARCHAR},
+      MODULE_NAME = #{moduleName,jdbcType=VARCHAR},
+      MODULE_LINK = #{moduleLink,jdbcType=VARCHAR},
+      MODULE_DESC = #{moduleDesc,jdbcType=VARCHAR},
+      MODULE_LEVEL = #{moduleLevel,jdbcType=INTEGER},
+      SHOW_SEQ = #{showSeq,jdbcType=INTEGER},
+      MODULE_TYPE = #{moduleType,jdbcType=INTEGER},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      CREATOR = #{creator,jdbcType=VARCHAR},
+      ENABLE_TIME = #{enableTime,jdbcType=TIMESTAMP},
+      STATUS = #{status,jdbcType=INTEGER},
+      SHOW_TYPE = #{showType,jdbcType=INTEGER}
+    where MODULE_ID = #{moduleId,jdbcType=VARCHAR}
+  </update>
+</mapper>

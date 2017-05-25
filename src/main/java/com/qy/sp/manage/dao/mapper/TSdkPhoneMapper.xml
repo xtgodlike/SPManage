@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.SdkPhoneDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TSdkPhone" >
+    <id column="PHONE_ID" property="phoneId" jdbcType="VARCHAR" />
+    <result column="SIM_A_IMSI" property="simAImsi" jdbcType="VARCHAR" />
+    <result column="SIM_A_MOBILE" property="simAMobile" jdbcType="VARCHAR" />
+    <result column="SIM_A_MOBILE_PROVINCE" property="simAMobileProvince" jdbcType="INTEGER" />
+    <result column="SIM_A_ICCID" property="simAIccid" jdbcType="VARCHAR" />
+    <result column="SIM_B_IMSI" property="simBImsi" jdbcType="VARCHAR" />
+    <result column="SIM_B_MOBILE" property="simBMobile" jdbcType="VARCHAR" />
+    <result column="SIM_B_MOBILE_PROVINCE" property="simBMobileProvince" jdbcType="INTEGER" />
+    <result column="SIM_B_ICCID" property="simBIccid" jdbcType="VARCHAR" />
+    <result column="SIM_C_IMSI" property="simCImsi" jdbcType="VARCHAR" />
+    <result column="SIM_C_MOBILE" property="simCMobile" jdbcType="VARCHAR" />
+    <result column="SIM_C_MOBILE_PROVINCE" property="simCMobileProvince" jdbcType="INTEGER" />
+    <result column="SIM_C_ICCID" property="simCIccid" jdbcType="VARCHAR" />
+    <result column="OSVERSION" property="osversion" jdbcType="VARCHAR" />
+    <result column="IMEI" property="imei" jdbcType="VARCHAR" />
+    <result column="CPU_MODEL" property="cpuModel" jdbcType="VARCHAR" />
+    <result column="MODEL" property="model" jdbcType="VARCHAR" />
+    <result column="MANUFACTURE" property="manufacture" jdbcType="VARCHAR" />
+    <result column="SCREEN_WIDTH" property="screenWidth" jdbcType="INTEGER" />
+    <result column="SCREEN_HEIGHT" property="screenHeight" jdbcType="INTEGER" />
+    <result column="ISWIFI" property="iswifi" jdbcType="INTEGER" />
+    <result column="MAC_ADD" property="macAdd" jdbcType="VARCHAR" />
+    <result column="ISROOT" property="isroot" jdbcType="INTEGER" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="MOD_TIME" property="modTime" jdbcType="TIMESTAMP" />
+    <result column="COUNTRY" property="country" jdbcType="VARCHAR" />
+    <result column="PROVINCE" property="province" jdbcType="VARCHAR" />
+    <result column="CITY" property="city" jdbcType="VARCHAR" />
+    <result column="REQ_KEY" property="reqKey" jdbcType="VARCHAR" />
+    <result column="SERVICE_ID" property="serviceId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PHONE_ID, SIM_A_IMSI, SIM_A_MOBILE, SIM_A_MOBILE_PROVINCE, SIM_A_ICCID, SIM_B_IMSI, 
+    SIM_B_MOBILE, SIM_B_MOBILE_PROVINCE, SIM_B_ICCID, SIM_C_IMSI, SIM_C_MOBILE, SIM_C_MOBILE_PROVINCE, 
+    SIM_C_ICCID, OSVERSION, IMEI, CPU_MODEL, MODEL, MANUFACTURE, SCREEN_WIDTH, SCREEN_HEIGHT, 
+    ISWIFI, MAC_ADD, ISROOT, CREATE_TIME, MOD_TIME, COUNTRY, PROVINCE, CITY, REQ_KEY, 
+    SERVICE_ID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sdk_phone
+    where PHONE_ID = #{phoneId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getPhoneIdByIMEIs" resultType="java.lang.String" parameterType="java.util.List" >
+    select 
+    PHONE_ID
+    from t_sdk_phone
+    where IMEI in 
+     <foreach collection="list" item = "imei" open="(" separator="," close=")">  
+  		#{imei}
+    </foreach>
+    
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_sdk_phone
+    where PHONE_ID = #{phoneId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TSdkPhone" >
+    insert into t_sdk_phone (PHONE_ID, SIM_A_IMSI, SIM_A_MOBILE, 
+      SIM_A_MOBILE_PROVINCE, SIM_A_ICCID, SIM_B_IMSI, 
+      SIM_B_MOBILE, SIM_B_MOBILE_PROVINCE, SIM_B_ICCID, 
+      SIM_C_IMSI, SIM_C_MOBILE, SIM_C_MOBILE_PROVINCE, 
+      SIM_C_ICCID, OSVERSION, IMEI, 
+      CPU_MODEL, MODEL, MANUFACTURE, 
+      SCREEN_WIDTH, SCREEN_HEIGHT, ISWIFI, 
+      MAC_ADD, ISROOT, CREATE_TIME, 
+      MOD_TIME, COUNTRY, PROVINCE, 
+      CITY, REQ_KEY, SERVICE_ID
+      )
+    values (#{phoneId,jdbcType=VARCHAR}, #{simAImsi,jdbcType=VARCHAR}, #{simAMobile,jdbcType=VARCHAR}, 
+      #{simAMobileProvince,jdbcType=INTEGER}, #{simAIccid,jdbcType=VARCHAR}, #{simBImsi,jdbcType=VARCHAR}, 
+      #{simBMobile,jdbcType=VARCHAR}, #{simBMobileProvince,jdbcType=INTEGER}, #{simBIccid,jdbcType=VARCHAR}, 
+      #{simCImsi,jdbcType=VARCHAR}, #{simCMobile,jdbcType=VARCHAR}, #{simCMobileProvince,jdbcType=INTEGER}, 
+      #{simCIccid,jdbcType=VARCHAR}, #{osversion,jdbcType=VARCHAR}, #{imei,jdbcType=VARCHAR}, 
+      #{cpuModel,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{manufacture,jdbcType=VARCHAR}, 
+      #{screenWidth,jdbcType=INTEGER}, #{screenHeight,jdbcType=INTEGER}, #{iswifi,jdbcType=INTEGER}, 
+      #{macAdd,jdbcType=VARCHAR}, #{isroot,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modTime,jdbcType=TIMESTAMP}, #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{reqKey,jdbcType=VARCHAR}, #{serviceId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TSdkPhone" >
+    insert into t_sdk_phone
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="phoneId != null" >
+        PHONE_ID,
+      </if>
+      <if test="simAImsi != null" >
+        SIM_A_IMSI,
+      </if>
+      <if test="simAMobile != null" >
+        SIM_A_MOBILE,
+      </if>
+      <if test="simAMobileProvince != null" >
+        SIM_A_MOBILE_PROVINCE,
+      </if>
+      <if test="simAIccid != null" >
+        SIM_A_ICCID,
+      </if>
+      <if test="simBImsi != null" >
+        SIM_B_IMSI,
+      </if>
+      <if test="simBMobile != null" >
+        SIM_B_MOBILE,
+      </if>
+      <if test="simBMobileProvince != null" >
+        SIM_B_MOBILE_PROVINCE,
+      </if>
+      <if test="simBIccid != null" >
+        SIM_B_ICCID,
+      </if>
+      <if test="simCImsi != null" >
+        SIM_C_IMSI,
+      </if>
+      <if test="simCMobile != null" >
+        SIM_C_MOBILE,
+      </if>
+      <if test="simCMobileProvince != null" >
+        SIM_C_MOBILE_PROVINCE,
+      </if>
+      <if test="simCIccid != null" >
+        SIM_C_ICCID,
+      </if>
+      <if test="osversion != null" >
+        OSVERSION,
+      </if>
+      <if test="imei != null" >
+        IMEI,
+      </if>
+      <if test="cpuModel != null" >
+        CPU_MODEL,
+      </if>
+      <if test="model != null" >
+        MODEL,
+      </if>
+      <if test="manufacture != null" >
+        MANUFACTURE,
+      </if>
+      <if test="screenWidth != null" >
+        SCREEN_WIDTH,
+      </if>
+      <if test="screenHeight != null" >
+        SCREEN_HEIGHT,
+      </if>
+      <if test="iswifi != null" >
+        ISWIFI,
+      </if>
+      <if test="macAdd != null" >
+        MAC_ADD,
+      </if>
+      <if test="isroot != null" >
+        ISROOT,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="modTime != null" >
+        MOD_TIME,
+      </if>
+      <if test="country != null" >
+        COUNTRY,
+      </if>
+      <if test="province != null" >
+        PROVINCE,
+      </if>
+      <if test="city != null" >
+        CITY,
+      </if>
+      <if test="reqKey != null" >
+        REQ_KEY,
+      </if>
+      <if test="serviceId != null" >
+        SERVICE_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="phoneId != null" >
+        #{phoneId,jdbcType=VARCHAR},
+      </if>
+      <if test="simAImsi != null" >
+        #{simAImsi,jdbcType=VARCHAR},
+      </if>
+      <if test="simAMobile != null" >
+        #{simAMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="simAMobileProvince != null" >
+        #{simAMobileProvince,jdbcType=INTEGER},
+      </if>
+      <if test="simAIccid != null" >
+        #{simAIccid,jdbcType=VARCHAR},
+      </if>
+      <if test="simBImsi != null" >
+        #{simBImsi,jdbcType=VARCHAR},
+      </if>
+      <if test="simBMobile != null" >
+        #{simBMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="simBMobileProvince != null" >
+        #{simBMobileProvince,jdbcType=INTEGER},
+      </if>
+      <if test="simBIccid != null" >
+        #{simBIccid,jdbcType=VARCHAR},
+      </if>
+      <if test="simCImsi != null" >
+        #{simCImsi,jdbcType=VARCHAR},
+      </if>
+      <if test="simCMobile != null" >
+        #{simCMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="simCMobileProvince != null" >
+        #{simCMobileProvince,jdbcType=INTEGER},
+      </if>
+      <if test="simCIccid != null" >
+        #{simCIccid,jdbcType=VARCHAR},
+      </if>
+      <if test="osversion != null" >
+        #{osversion,jdbcType=VARCHAR},
+      </if>
+      <if test="imei != null" >
+        #{imei,jdbcType=VARCHAR},
+      </if>
+      <if test="cpuModel != null" >
+        #{cpuModel,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null" >
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacture != null" >
+        #{manufacture,jdbcType=VARCHAR},
+      </if>
+      <if test="screenWidth != null" >
+        #{screenWidth,jdbcType=INTEGER},
+      </if>
+      <if test="screenHeight != null" >
+        #{screenHeight,jdbcType=INTEGER},
+      </if>
+      <if test="iswifi != null" >
+        #{iswifi,jdbcType=INTEGER},
+      </if>
+      <if test="macAdd != null" >
+        #{macAdd,jdbcType=VARCHAR},
+      </if>
+      <if test="isroot != null" >
+        #{isroot,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modTime != null" >
+        #{modTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="country != null" >
+        #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="reqKey != null" >
+        #{reqKey,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceId != null" >
+        #{serviceId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TSdkPhone" >
+    update t_sdk_phone
+    <set >
+      <if test="simAImsi != null" >
+        SIM_A_IMSI = #{simAImsi,jdbcType=VARCHAR},
+      </if>
+      <if test="simAMobile != null" >
+        SIM_A_MOBILE = #{simAMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="simAMobileProvince != null" >
+        SIM_A_MOBILE_PROVINCE = #{simAMobileProvince,jdbcType=INTEGER},
+      </if>
+      <if test="simAIccid != null" >
+        SIM_A_ICCID = #{simAIccid,jdbcType=VARCHAR},
+      </if>
+      <if test="simBImsi != null" >
+        SIM_B_IMSI = #{simBImsi,jdbcType=VARCHAR},
+      </if>
+      <if test="simBMobile != null" >
+        SIM_B_MOBILE = #{simBMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="simBMobileProvince != null" >
+        SIM_B_MOBILE_PROVINCE = #{simBMobileProvince,jdbcType=INTEGER},
+      </if>
+      <if test="simBIccid != null" >
+        SIM_B_ICCID = #{simBIccid,jdbcType=VARCHAR},
+      </if>
+      <if test="simCImsi != null" >
+        SIM_C_IMSI = #{simCImsi,jdbcType=VARCHAR},
+      </if>
+      <if test="simCMobile != null" >
+        SIM_C_MOBILE = #{simCMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="simCMobileProvince != null" >
+        SIM_C_MOBILE_PROVINCE = #{simCMobileProvince,jdbcType=INTEGER},
+      </if>
+      <if test="simCIccid != null" >
+        SIM_C_ICCID = #{simCIccid,jdbcType=VARCHAR},
+      </if>
+      <if test="osversion != null" >
+        OSVERSION = #{osversion,jdbcType=VARCHAR},
+      </if>
+      <if test="imei != null" >
+        IMEI = #{imei,jdbcType=VARCHAR},
+      </if>
+      <if test="cpuModel != null" >
+        CPU_MODEL = #{cpuModel,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null" >
+        MODEL = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacture != null" >
+        MANUFACTURE = #{manufacture,jdbcType=VARCHAR},
+      </if>
+      <if test="screenWidth != null" >
+        SCREEN_WIDTH = #{screenWidth,jdbcType=INTEGER},
+      </if>
+      <if test="screenHeight != null" >
+        SCREEN_HEIGHT = #{screenHeight,jdbcType=INTEGER},
+      </if>
+      <if test="iswifi != null" >
+        ISWIFI = #{iswifi,jdbcType=INTEGER},
+      </if>
+      <if test="macAdd != null" >
+        MAC_ADD = #{macAdd,jdbcType=VARCHAR},
+      </if>
+      <if test="isroot != null" >
+        ISROOT = #{isroot,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modTime != null" >
+        MOD_TIME = #{modTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="country != null" >
+        COUNTRY = #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        PROVINCE = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        CITY = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="reqKey != null" >
+        REQ_KEY = #{reqKey,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceId != null" >
+        SERVICE_ID = #{serviceId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where PHONE_ID = #{phoneId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TSdkPhone" >
+    update t_sdk_phone
+    set SIM_A_IMSI = #{simAImsi,jdbcType=VARCHAR},
+      SIM_A_MOBILE = #{simAMobile,jdbcType=VARCHAR},
+      SIM_A_MOBILE_PROVINCE = #{simAMobileProvince,jdbcType=INTEGER},
+      SIM_A_ICCID = #{simAIccid,jdbcType=VARCHAR},
+      SIM_B_IMSI = #{simBImsi,jdbcType=VARCHAR},
+      SIM_B_MOBILE = #{simBMobile,jdbcType=VARCHAR},
+      SIM_B_MOBILE_PROVINCE = #{simBMobileProvince,jdbcType=INTEGER},
+      SIM_B_ICCID = #{simBIccid,jdbcType=VARCHAR},
+      SIM_C_IMSI = #{simCImsi,jdbcType=VARCHAR},
+      SIM_C_MOBILE = #{simCMobile,jdbcType=VARCHAR},
+      SIM_C_MOBILE_PROVINCE = #{simCMobileProvince,jdbcType=INTEGER},
+      SIM_C_ICCID = #{simCIccid,jdbcType=VARCHAR},
+      OSVERSION = #{osversion,jdbcType=VARCHAR},
+      IMEI = #{imei,jdbcType=VARCHAR},
+      CPU_MODEL = #{cpuModel,jdbcType=VARCHAR},
+      MODEL = #{model,jdbcType=VARCHAR},
+      MANUFACTURE = #{manufacture,jdbcType=VARCHAR},
+      SCREEN_WIDTH = #{screenWidth,jdbcType=INTEGER},
+      SCREEN_HEIGHT = #{screenHeight,jdbcType=INTEGER},
+      ISWIFI = #{iswifi,jdbcType=INTEGER},
+      MAC_ADD = #{macAdd,jdbcType=VARCHAR},
+      ISROOT = #{isroot,jdbcType=INTEGER},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      MOD_TIME = #{modTime,jdbcType=TIMESTAMP},
+      COUNTRY = #{country,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      REQ_KEY = #{reqKey,jdbcType=VARCHAR},
+      SERVICE_ID = #{serviceId,jdbcType=INTEGER}
+    where PHONE_ID = #{phoneId,jdbcType=VARCHAR}
+  </update>
+</mapper>

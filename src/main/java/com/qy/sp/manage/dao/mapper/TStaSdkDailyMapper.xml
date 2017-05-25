@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.StaSdkDailyDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TStaSdkDaily" >
+    <id column="COMP_DATE" property="compDate" jdbcType="DATE" />
+    <id column="APP_ID" property="appId" jdbcType="VARCHAR" />
+    <id column="CHANNEL_ID" property="channelId" jdbcType="VARCHAR" />
+    <id column="PROVINCE_ID" property="provinceId" jdbcType="INTEGER" />
+    <result column="START_USER_NUM" property="startUserNum" jdbcType="INTEGER" />
+    <result column="ADD_USER_NUM" property="addUserNum" jdbcType="INTEGER" />
+    <result column="PAYREQ_USER_NUM" property="payreqUserNum" jdbcType="INTEGER" />
+    <result column="PAYSUC_USER_NUM" property="paysucUserNum" jdbcType="INTEGER" />
+    <result column="UNI_PUSER_NUM" property="uniPuserNum" jdbcType="INTEGER" />
+    <result column="UNI_PSUSER_NUM" property="uniPSuserNum" jdbcType="INTEGER" />
+    <result column="UNI_PAYSUC_RATIO" property="uniPaysucRatio" jdbcType="DOUBLE" />
+    <result column="CM_PUSER_NUM" property="cmPuserNum" jdbcType="INTEGER" />
+    <result column="CM_PSUSER_NUM" property="cmPSuserNum" jdbcType="INTEGER" />
+    <result column="CM_PAYSUC_RATIO" property="cmPaysucRatio" jdbcType="DOUBLE" />
+    <result column="TELE_PUSER_NUM" property="telePuserNum" jdbcType="INTEGER" />
+    <result column="TELE_PSUSER_NUM" property="telePSuserNum" jdbcType="INTEGER" />
+    <result column="TELE_PAYSUC_RATIO" property="telePaysucRatio" jdbcType="DOUBLE" />
+    <result column="INFO_FEE" property="infoFee" jdbcType="DOUBLE" />
+    <result column="PAY_RATIO" property="payRatio" jdbcType="DOUBLE" />
+    <result column="PAY_SUC_RATIO" property="paySucRatio" jdbcType="DOUBLE" />
+    <result column="TRANSLATE_RATIO" property="translateRatio" jdbcType="DOUBLE" />
+    <result column="ARPU" property="arpu" jdbcType="DOUBLE" />
+     <result column="APP_NAME" property="appName" jdbcType="VARCHAR" />
+    <result column="CHANNEL_NAME" property="channelName" jdbcType="VARCHAR" />
+    <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    COMP_DATE, APP_ID, CHANNEL_ID, PROVINCE_ID, START_USER_NUM, ADD_USER_NUM, PAYREQ_USER_NUM, 
+    PAYSUC_USER_NUM, UNI_PUSER_NUM,UNI_PSUSER_NUM, UNI_PAYSUC_RATIO, CM_PUSER_NUM,CM_PSUSER_NUM, CM_PAYSUC_RATIO, 
+    TELE_PUSER_NUM,TELE_PSUSER_NUM, TELE_PAYSUC_RATIO, INFO_FEE,PAY_RATIO, PAY_SUC_RATIO, TRANSLATE_RATIO, ARPU
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.qy.sp.manage.dto.TStaSdkDailyKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sta_sdk_daily
+    where COMP_DATE = #{compDate,jdbcType=DATE}
+      and APP_ID = #{appId,jdbcType=VARCHAR}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getStaSdkDailyList" resultMap="BaseResultMap" parameterType="com.qy.sp.manage.dto.StaSdkDailySearchParam" >
+    select 
+     t1.COMP_DATE, t1.APP_ID, t1.CHANNEL_ID, t1.PROVINCE_ID,t2.APP_NAME, t3.FULL_NAME CHANNEL_NAME, t4.PROVINCE_NAME,  t1.START_USER_NUM, t1.ADD_USER_NUM, t1.PAYREQ_USER_NUM, 
+    t1.PAYSUC_USER_NUM, t1.UNI_PUSER_NUM,t1.UNI_PSUSER_NUM, t1.UNI_PAYSUC_RATIO, t1.CM_PUSER_NUM,t1.CM_PSUSER_NUM, t1.CM_PAYSUC_RATIO, 
+    t1.TELE_PUSER_NUM, t1.TELE_PSUSER_NUM, t1.TELE_PAYSUC_RATIO, t1.INFO_FEE,t1.PAY_RATIO, t1.PAY_SUC_RATIO, t1.TRANSLATE_RATIO, t1.ARPU
+    from t_sta_sdk_daily t1,t_sdk_app t2,t_channel t3,t_province t4
+    where t1.APP_ID = t2.APP_ID AND t1.CHANNEL_ID = t3.CHANNEL_ID AND t1.PROVINCE_ID = t4.PROVINCE_ID
+    <if test="param.startDate != null" > 
+	AND DATE(t1.COMP_DATE) &gt;= #{param.startDate,jdbcType=DATE}
+	 </if> 
+	 <if test="param.endDate != null" >
+	AND DATE(t1.COMP_DATE) &lt; #{param.endDate,jdbcType=DATE}
+	 </if>
+	<if test="param.appId != null and param.appId != '' " >
+	AND t1.APP_ID = #{param.appId,jdbcType=VARCHAR}
+	 </if>
+	<if test="param.channelId != null and param.channelId != ''  " >
+	AND t1.CHANNEL_ID = #{param.channelId,jdbcType=VARCHAR}
+	 </if>
+	 <if test="param.provinceId != null" >
+	AND t1.PROVINCE_ID = #{param.provinceId,jdbcType=INTEGER}
+	 </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="com.qy.sp.manage.dto.TStaSdkDailyKey" >
+    delete from t_sta_sdk_daily
+    where COMP_DATE = #{compDate,jdbcType=DATE}
+      and APP_ID = #{appId,jdbcType=VARCHAR}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="deleteByDate" parameterType="java.util.Date" >
+    delete from t_sta_sdk_daily
+    where COMP_DATE = #{compDate,jdbcType=DATE}
+  </delete>
+  
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TStaSdkDaily" >
+    insert into t_sta_sdk_daily (COMP_DATE, APP_ID, CHANNEL_ID, 
+      PROVINCE_ID, START_USER_NUM, ADD_USER_NUM, 
+      PAYREQ_USER_NUM, PAYSUC_USER_NUM, UNI_PUSER_NUM, UNI_PSUSER_NUM,
+      UNI_PAYSUC_RATIO, CM_PUSER_NUM,CM_PSUSER_NUM, CM_PAYSUC_RATIO, 
+      TELE_PUSER_NUM,TELE_PSUSER_NUM, TELE_PAYSUC_RATIO, INFO_FEE, PAY_RATIO,
+      PAY_SUC_RATIO, TRANSLATE_RATIO, ARPU
+      )
+    values (#{compDate,jdbcType=DATE}, #{appId,jdbcType=VARCHAR}, #{channelId,jdbcType=VARCHAR}, 
+      #{provinceId,jdbcType=INTEGER}, #{startUserNum,jdbcType=INTEGER}, #{addUserNum,jdbcType=INTEGER}, 
+      #{payreqUserNum,jdbcType=INTEGER}, #{paysucUserNum,jdbcType=INTEGER}, #{uniPuserNum,jdbcType=INTEGER}, #{uniPSuserNum,jdbcType=INTEGER}, 
+      #{uniPaysucRatio,jdbcType=DOUBLE}, #{cmPuserNum,jdbcType=INTEGER},#{cmPSuserNum,jdbcType=INTEGER}, #{cmPaysucRatio,jdbcType=DOUBLE}, 
+      #{telePuserNum,jdbcType=INTEGER},  #{telePSuserNum,jdbcType=INTEGER}, #{telePaysucRatio,jdbcType=DOUBLE}, #{infoFee,jdbcType=DOUBLE}, 
+      #{payRatio,jdbcType=DOUBLE},#{paySucRatio,jdbcType=DOUBLE}, #{translateRatio,jdbcType=DOUBLE}, #{arpu,jdbcType=DOUBLE}
+      )
+  </insert>
+  
+  <insert id="insertBatch"  parameterType="java.util.List">  
+     insert into t_sta_sdk_daily (COMP_DATE, APP_ID, CHANNEL_ID, 
+      PROVINCE_ID, START_USER_NUM, ADD_USER_NUM, 
+      PAYREQ_USER_NUM, PAYSUC_USER_NUM, UNI_PUSER_NUM, UNI_PSUSER_NUM,
+      UNI_PAYSUC_RATIO, CM_PUSER_NUM, CM_PSUSER_NUM,CM_PAYSUC_RATIO, 
+      TELE_PUSER_NUM,TELE_PSUSER_NUM, TELE_PAYSUC_RATIO, INFO_FEE, PAY_RATIO,
+      PAY_SUC_RATIO, TRANSLATE_RATIO, ARPU
+      )
+    values  
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.compDate},#{item.appId},#{item.channelId},#{item.provinceId},#{item.startUserNum},#{item.addUserNum},
+        #{item.payreqUserNum},#{item.paysucUserNum},#{item.uniPuserNum},#{item.uniPSuserNum},#{item.uniPaysucRatio},
+        #{item.cmPuserNum},#{item.cmPSuserNum},#{item.cmPaysucRatio},#{item.telePuserNum},#{item.telePSuserNum},#{item.telePaysucRatio},
+        #{item.infoFee},#{item.payRatio},#{item.paySucRatio},#{item.translateRatio},#{item.arpu})
+    </foreach>  
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TStaSdkDaily" >
+    insert into t_sta_sdk_daily
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="compDate != null" >
+        COMP_DATE,
+      </if>
+      <if test="appId != null" >
+        APP_ID,
+      </if>
+      <if test="channelId != null" >
+        CHANNEL_ID,
+      </if>
+      <if test="provinceId != null" >
+        PROVINCE_ID,
+      </if>
+      <if test="startUserNum != null" >
+        START_USER_NUM,
+      </if>
+      <if test="addUserNum != null" >
+        ADD_USER_NUM,
+      </if>
+      <if test="payreqUserNum != null" >
+        PAYREQ_USER_NUM,
+      </if>
+      <if test="paysucUserNum != null" >
+        PAYSUC_USER_NUM,
+      </if>
+      <if test="uniPuserNum != null" >
+        UNI_PUSER_NUM,
+      </if>
+       <if test="uniPSuserNum != null" >
+        UNI_PSUSER_NUM,
+      </if>
+      <if test="uniPaysucRatio != null" >
+        UNI_PAYSUC_RATIO,
+      </if>
+      <if test="cmPuserNum != null" >
+        CM_PUSER_NUM,
+      </if>
+        <if test="cmPSuserNum != null" >
+        CM_PSUSER_NUM,
+      </if>
+      <if test="cmPaysucRatio != null" >
+        CM_PAYSUC_RATIO,
+      </if>
+      <if test="telePuserNum != null" >
+        TELE_PUSER_NUM,
+      </if>
+      <if test="telePSuserNum != null" >
+        TELE_PSUSER_NUM,
+      </if>
+      <if test="telePaysucRatio != null" >
+        TELE_PAYSUC_RATIO,
+      </if>
+      <if test="infoFee != null" >
+        INFO_FEE,
+      </if>
+       <if test="payRatio != null" >
+        PAY_RATIO,
+      </if>
+      <if test="paySucRatio != null" >
+        PAY_SUC_RATIO,
+      </if>
+      <if test="translateRatio != null" >
+        TRANSLATE_RATIO,
+      </if>
+      <if test="arpu != null" >
+        ARPU,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="compDate != null" >
+        #{compDate,jdbcType=DATE},
+      </if>
+      <if test="appId != null" >
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null" >
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null" >
+        #{provinceId,jdbcType=INTEGER},
+      </if>
+      <if test="startUserNum != null" >
+        #{startUserNum,jdbcType=INTEGER},
+      </if>
+      <if test="addUserNum != null" >
+        #{addUserNum,jdbcType=INTEGER},
+      </if>
+      <if test="payreqUserNum != null" >
+        #{payreqUserNum,jdbcType=INTEGER},
+      </if>
+      <if test="paysucUserNum != null" >
+        #{paysucUserNum,jdbcType=INTEGER},
+      </if>
+      <if test="uniPuserNum != null" >
+        #{uniPuserNum,jdbcType=INTEGER},
+      </if>
+      <if test="uniPSuserNum != null" >
+        #{uniPSuserNum,jdbcType=INTEGER},
+      </if>
+      <if test="uniPaysucRatio != null" >
+        #{uniPaysucRatio,jdbcType=DOUBLE},
+      </if>
+      <if test="cmPuserNum != null" >
+        #{cmPuserNum,jdbcType=INTEGER},
+      </if>
+      <if test="cmPSuserNum != null" >
+        #{cmPSuserNum,jdbcType=INTEGER},
+      </if>
+      <if test="cmPaysucRatio != null" >
+        #{cmPaysucRatio,jdbcType=DOUBLE},
+      </if>
+      <if test="telePuserNum != null" >
+        #{telePuserNum,jdbcType=INTEGER},
+      </if>
+       <if test="telePSuserNum != null" >
+        #{telePSuserNum,jdbcType=INTEGER},
+      </if>
+      <if test="telePaysucRatio != null" >
+        #{telePaysucRatio,jdbcType=DOUBLE},
+      </if>
+      <if test="infoFee != null" >
+        #{infoFee,jdbcType=DOUBLE},
+      </if>
+      <if test="payRatio != null" >
+        #{payRatio,jdbcType=DOUBLE},
+      </if>
+      <if test="paySucRatio != null" >
+        #{paySucRatio,jdbcType=DOUBLE},
+      </if>
+      <if test="translateRatio != null" >
+        #{translateRatio,jdbcType=DOUBLE},
+      </if>
+      <if test="arpu != null" >
+        #{arpu,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TStaSdkDaily" >
+    update t_sta_sdk_daily
+    <set >
+      <if test="startUserNum != null" >
+        START_USER_NUM = #{startUserNum,jdbcType=INTEGER},
+      </if>
+      <if test="addUserNum != null" >
+        ADD_USER_NUM = #{addUserNum,jdbcType=INTEGER},
+      </if>
+      <if test="payreqUserNum != null" >
+        PAYREQ_USER_NUM = #{payreqUserNum,jdbcType=INTEGER},
+      </if>
+      <if test="paysucUserNum != null" >
+        PAYSUC_USER_NUM = #{paysucUserNum,jdbcType=INTEGER},
+      </if>
+      <if test="uniPuserNum != null" >
+        UNI_PUSER_NUM = #{uniPuserNum,jdbcType=INTEGER},
+      </if>
+      <if test="uniPSuserNum != null" >
+        UNI_PSUSER_NUM = #{uniPSuserNum,jdbcType=INTEGER},
+      </if>
+      <if test="uniPaysucRatio != null" >
+        UNI_PAYSUC_RATIO = #{uniPaysucRatio,jdbcType=DOUBLE},
+      </if>
+      <if test="cmPuserNum != null" >
+        CM_PUSER_NUM = #{cmPuserNum,jdbcType=INTEGER},
+      </if>
+       <if test="cmPSuserNum != null" >
+        CM_PSUSER_NUM = #{cmPSuserNum,jdbcType=INTEGER},
+      </if>
+      <if test="cmPaysucRatio != null" >
+        CM_PAYSUC_RATIO = #{cmPaysucRatio,jdbcType=DOUBLE},
+      </if>
+      <if test="telePuserNum != null" >
+        TELE_PUSER_NUM = #{telePuserNum,jdbcType=INTEGER},
+      </if>
+       <if test="telePSuserNum != null" >
+        TELE_PSUSER_NUM = #{telePSuserNum,jdbcType=INTEGER},
+      </if>
+      <if test="telePaysucRatio != null" >
+        TELE_PAYSUC_RATIO = #{telePaysucRatio,jdbcType=DOUBLE},
+      </if>
+      <if test="infoFee != null" >
+        INFO_FEE = #{infoFee,jdbcType=DOUBLE},
+      </if>
+       <if test="payRatio != null" >
+        PAY_RATIO = #{payRatio,jdbcType=DOUBLE},
+      </if>
+      <if test="paySucRatio != null" >
+        PAY_SUC_RATIO = #{paySucRatio,jdbcType=DOUBLE},
+      </if>
+      <if test="translateRatio != null" >
+        TRANSLATE_RATIO = #{translateRatio,jdbcType=DOUBLE},
+      </if>
+      <if test="arpu != null" >
+        ARPU = #{arpu,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where COMP_DATE = #{compDate,jdbcType=DATE}
+      and APP_ID = #{appId,jdbcType=VARCHAR}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TStaSdkDaily" >
+    update t_sta_sdk_daily
+    set START_USER_NUM = #{startUserNum,jdbcType=INTEGER},
+      ADD_USER_NUM = #{addUserNum,jdbcType=INTEGER},
+      PAYREQ_USER_NUM = #{payreqUserNum,jdbcType=INTEGER},
+      PAYSUC_USER_NUM = #{paysucUserNum,jdbcType=INTEGER},
+      UNI_PUSER_NUM = #{uniPuserNum,jdbcType=INTEGER},
+      UNI_PSUSER_NUM = #{uniPSuserNum,jdbcType=INTEGER},
+      UNI_PAYSUC_RATIO = #{uniPaysucRatio,jdbcType=DOUBLE},
+      CM_PUSER_NUM = #{cmPuserNum,jdbcType=INTEGER},
+       CM_PSUSER_NUM = #{cmPSuserNum,jdbcType=INTEGER},
+      CM_PAYSUC_RATIO = #{cmPaysucRatio,jdbcType=DOUBLE},
+      TELE_PUSER_NUM = #{telePuserNum,jdbcType=INTEGER},
+      TELE_PSUSER_NUM = #{telePSuserNum,jdbcType=INTEGER},
+      TELE_PAYSUC_RATIO = #{telePaysucRatio,jdbcType=DOUBLE},
+      INFO_FEE = #{infoFee,jdbcType=DOUBLE},
+      PAY_RATIO = #{payRatio,jdbcType=DOUBLE},
+      PAY_SUC_RATIO = #{paySucRatio,jdbcType=DOUBLE},
+      TRANSLATE_RATIO = #{translateRatio,jdbcType=DOUBLE},
+      ARPU = #{arpu,jdbcType=DOUBLE}
+    where COMP_DATE = #{compDate,jdbcType=DATE}
+      and APP_ID = #{appId,jdbcType=VARCHAR}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+  </update>
+</mapper>

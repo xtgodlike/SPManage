@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.ChannelPipleDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TChannelPiple" >
+    <id column="CHANNEL_ID" property="channelId" jdbcType="VARCHAR" />
+    <id column="PIPLE_ID" property="pipleId" jdbcType="VARCHAR" />
+    <result column="NOTIFY_URL" property="notifyUrl" jdbcType="VARCHAR" />
+    <result column="VOLT" property="volt" jdbcType="INTEGER" />
+    <result column="TRADE_DAY" property="tradeDay" jdbcType="INTEGER" />
+    <result column="TRADE_MONTH" property="tradeMonth" jdbcType="INTEGER" />
+    <result column="CHANNEL_NAME" property="channelName" jdbcType="VARCHAR" />
+    <result column="PIPLE_NAME" property="pipleName" jdbcType="VARCHAR" />
+    <result column="PIPLE_NUMBER" property="pipleNumber" jdbcType="VARCHAR" />
+    <result column="OP_STATUS" property="opStatus" jdbcType="INTEGER" />
+    <result column="API_KEY" property="apiKey" jdbcType="VARCHAR" />
+    <result column="SETTLEMENT_RATIO" property="settlementRatio" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CHANNEL_ID, PIPLE_ID, NOTIFY_URL, VOLT,TRADE_DAY,TRADE_MONTH,OP_STATUS,SETTLEMENT_RATIO
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.qy.sp.manage.dto.TChannelPipleKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_channel_piple
+    where CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </select>
+  <select id="getListByPipleId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    t1.CHANNEL_ID as CHANNEL_ID, t1.PIPLE_ID as PIPLE_ID, t1.NOTIFY_URL as NOTIFY_URL, t1.VOLT as VOLT,t1.TRADE_DAY as TRADE_DAY,t1.TRADE_MONTH as TRADE_MONTH,t1.OP_STATUS,t1.SETTLEMENT_RATIO,
+    t2.FULL_NAME as CHANNEL_NAME,t2.API_KEY
+    from t_channel_piple t1,t_channel t2
+    where t1.CHANNEL_ID = t2.CHANNEL_ID and t1.PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </select>
+  <select id="getListByChannelId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    t1.CHANNEL_ID as CHANNEL_ID, t1.PIPLE_ID as PIPLE_ID, t1.NOTIFY_URL as NOTIFY_URL, t1.VOLT as VOLT,t1.TRADE_DAY as TRADE_DAY,t1.TRADE_MONTH as TRADE_MONTH,t1.OP_STATUS,t1.SETTLEMENT_RATIO,
+    t2.PIPLE_NAME as PIPLE_NAME,t2.PIPLE_NUMBER as PIPLE_NUMBER
+    from t_channel_piple t1,t_piple t2
+    where t1.PIPLE_ID = t2.PIPLE_ID and t1.CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.qy.sp.manage.dto.TChannelPipleKey" >
+    delete from t_channel_piple
+    where CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TChannelPiple" >
+    insert into t_channel_piple (CHANNEL_ID, PIPLE_ID, NOTIFY_URL, VOLT, TRADE_DAY,TRADE_MONTH,OP_STATUS,SETTLEMENT_RATIO )
+    values (#{channelId,jdbcType=VARCHAR}, #{pipleId,jdbcType=VARCHAR}, #{notifyUrl,jdbcType=VARCHAR}, 
+      #{volt,jdbcType=INTEGER},#{tradeDay,jdbcType=INTEGER},#{tradeMonth,jdbcType=INTEGER},#{opStatus,jdbcType=INTEGER},#{settlementRatio,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TChannelPiple" >
+    insert into t_channel_piple
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="channelId != null" >
+        CHANNEL_ID,
+      </if>
+      <if test="pipleId != null" >
+        PIPLE_ID,
+      </if>
+      <if test="notifyUrl != null" >
+        NOTIFY_URL,
+      </if>
+      <if test="volt != null" >
+        VOLT,
+      </if>
+       <if test="tradeDay != null" >
+        TRADE_DAY,
+      </if>
+       <if test="tradeMonth != null" >
+        TRADE_MONTH,
+      </if>
+      <if test="opStatus != null" >
+        OP_STATUS,
+      </if>
+      <if test="settlementRatio != null">
+        SETTLEMENT_RATIO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="channelId != null" >
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipleId != null" >
+        #{pipleId,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyUrl != null" >
+        #{notifyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="volt != null" >
+        #{volt,jdbcType=INTEGER},
+      </if>
+       <if test="tradeDay != null" >
+        #{tradeDay,jdbcType=INTEGER},
+      </if>
+       <if test="tradeMonth != null" >
+        #{tradeMonth,jdbcType=INTEGER},
+      </if>
+      <if test="opStatus != null" >
+        #{opStatus,jdbcType=INTEGER},
+      </if>
+      <if test="settlementRatio != null">
+        #{settlementRatio,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TChannelPiple" >
+    update t_channel_piple
+    <set >
+      <if test="notifyUrl != null" >
+        NOTIFY_URL = #{notifyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="volt != null" >
+        VOLT = #{volt,jdbcType=INTEGER},
+      </if>
+      <if test="tradeDay != null" >
+        TRADE_DAY = #{tradeDay,jdbcType=INTEGER},
+      </if>
+      <if test="tradeMonth != null" >
+        TRADE_MONTH = #{tradeMonth,jdbcType=INTEGER},
+      </if>
+      <if test="opStatus != null" >
+        OP_STATUS = #{opStatus,jdbcType=INTEGER},
+      </if>
+      <if test="settlementRatio != null">
+        SETTLEMENT_RATIO = #{settlementRatio,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TChannelPiple" >
+    update t_channel_piple
+    set NOTIFY_URL = #{notifyUrl,jdbcType=VARCHAR},
+      VOLT = #{volt,jdbcType=INTEGER},TRADE_DAY = #{tradeDay,jdbcType=INTEGER},TRADE_MONTH = #{tradeMonth,jdbcType=INTEGER},OP_STATUS = #{opStatus,jdbcType=INTEGER},SETTLEMENT_RATIO = #{settlementRatio,jdbcType=DOUBLE}
+    where CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </update>
+</mapper>

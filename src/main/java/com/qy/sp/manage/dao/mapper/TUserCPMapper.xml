@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.UserCPDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TUserCPKey" >
+    <id column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <id column="CP_ID" property="cpId" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="com.qy.sp.manage.dto.TUserCPKey" >
+    delete from t_user_cp
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+      and CP_ID = #{cpId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByUserId" parameterType="java.lang.String" >
+    delete from t_user_cp
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TUserCPKey" >
+    insert into t_user_cp (USER_ID, CP_ID)
+    values (#{userId,jdbcType=VARCHAR}, #{cpId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TUserCPKey" >
+    insert into t_user_cp
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="cpId != null" >
+        CP_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="cpId != null" >
+        #{cpId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="getUserCPs" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select 
+    u.USER_ID,u.CP_ID
+    from t_user_CP u,t_CP p
+    where  u.USER_ID = #{userId,jdbcType=VARCHAR} and p.CP_ID = u.CP_ID
+  </select>
+  
+  <select id="getCPIdsByUserId" resultType="java.lang.String"  parameterType="java.lang.String">
+  	select 
+    CP_ID
+    from t_user_CP
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+  </select>
+</mapper>

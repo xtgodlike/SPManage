@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.SdktaskPhoneDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TSdktaskPhone" >
+    <id column="TASK_ID" property="taskId" jdbcType="VARCHAR" />
+    <id column="PHONE_ID" property="phoneId" jdbcType="VARCHAR" />
+    <id column="TASK_STEP" property="taskStep" jdbcType="VARCHAR" />
+    <result column="TASK_EXECUTE" property="taskExecute" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    TASK_ID, PHONE_ID, TASK_STEP, TASK_EXECUTE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.qy.sp.manage.dto.TSdktaskPhoneKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sdktask_phone
+    where TASK_ID = #{taskId,jdbcType=VARCHAR}
+      and PHONE_ID = #{phoneId,jdbcType=VARCHAR}
+      and TASK_STEP = #{taskStep,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.qy.sp.manage.dto.TSdktaskPhoneKey" >
+    delete from t_sdktask_phone
+    where TASK_ID = #{taskId,jdbcType=VARCHAR}
+      and PHONE_ID = #{phoneId,jdbcType=VARCHAR}
+      and TASK_STEP = #{taskStep,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TSdktaskPhone" >
+    insert into t_sdktask_phone (TASK_ID, PHONE_ID, TASK_STEP, 
+      TASK_EXECUTE)
+    values (#{taskId,jdbcType=VARCHAR}, #{phoneId,jdbcType=VARCHAR}, #{taskStep,jdbcType=VARCHAR}, 
+      #{taskExecute,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TSdktaskPhone" >
+    insert into t_sdktask_phone
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        TASK_ID,
+      </if>
+      <if test="phoneId != null" >
+        PHONE_ID,
+      </if>
+      <if test="taskStep != null" >
+        TASK_STEP,
+      </if>
+      <if test="taskExecute != null" >
+        TASK_EXECUTE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneId != null" >
+        #{phoneId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskStep != null" >
+        #{taskStep,jdbcType=VARCHAR},
+      </if>
+      <if test="taskExecute != null" >
+        #{taskExecute,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TSdktaskPhone" >
+    update t_sdktask_phone
+    <set >
+      <if test="taskExecute != null" >
+        TASK_EXECUTE = #{taskExecute,jdbcType=INTEGER},
+      </if>
+    </set>
+    where TASK_ID = #{taskId,jdbcType=VARCHAR}
+      and PHONE_ID = #{phoneId,jdbcType=VARCHAR}
+      and TASK_STEP = #{taskStep,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TSdktaskPhone" >
+    update t_sdktask_phone
+    set TASK_EXECUTE = #{taskExecute,jdbcType=INTEGER}
+    where TASK_ID = #{taskId,jdbcType=VARCHAR}
+      and PHONE_ID = #{phoneId,jdbcType=VARCHAR}
+      and TASK_STEP = #{taskStep,jdbcType=VARCHAR}
+  </update>
+  
+  <delete id = "deleteBatch" >  
+       delete from t_sdktask_phone where TASK_ID = #{taskId}   and PHONE_ID in
+    <foreach collection="phoneIds" item = "phoneId" open="(" separator="," close=")">  
+  		#{phoneId}
+    </foreach>  
+  </delete>  
+  
+  <insert id="insertBatch"  parameterType="java.util.List">  
+    insert into  t_sdktask_phone (TASK_ID, PHONE_ID, TASK_STEP,TASK_EXECUTE)  
+    values  
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.taskId},#{item.phoneId},#{item.taskStep},#{item.taskExecute})  
+    </foreach>  
+  </insert>
+</mapper>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.PipleProvinceDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TPipleProvince" >
+    <id column="PIPLE_ID" property="pipleId" jdbcType="VARCHAR" />
+    <id column="PROVINCE_ID" property="provinceId" jdbcType="INTEGER" />
+    <result column="PRIORITY" property="priority" jdbcType="INTEGER" />
+    <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+    <result column="OP_STATUS" property="opStatus" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PIPLE_ID, PROVINCE_ID, PRIORITY,OP_STATUS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.qy.sp.manage.dto.TPipleProvinceKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_piple_province
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+  </select>
+  <select id="getPipleProvinceList" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	SELECT 
+  	t.PIPLE_ID PIPLE_ID,t.PROVINCE_ID PROVINCE_ID,t.PRIORITY PRIORITY,t.OP_STATUS OP_STATUS,p.PROVINCE_NAME PROVINCE_NAME
+	FROM t_piple_province t,t_province p
+	WHERE t.PROVINCE_ID = p.PROVINCE_ID
+	AND  t.PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+	ORDER BY t.OP_STATUS DESC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.qy.sp.manage.dto.TPipleProvinceKey" >
+    delete from t_piple_province
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByPipleId" parameterType="java.lang.String" >
+    delete from t_piple_province
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TPipleProvince" >
+    insert into t_piple_province (PIPLE_ID, PROVINCE_ID, PRIORITY
+      )
+    values (#{pipleId,jdbcType=VARCHAR}, #{provinceId,jdbcType=INTEGER}, #{priority,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertBatch"  parameterType="java.util.List">  
+    insert into  t_piple_province(PIPLE_ID, PROVINCE_ID, PRIORITY,OP_STATUS)   
+    values  
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.pipleId},#{item.provinceId},#{item.priority},#{item.opStatus})  
+    </foreach>  
+  </insert>  
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TPipleProvince" >
+    insert into t_piple_province
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="pipleId != null" >
+        PIPLE_ID,
+      </if>
+      <if test="provinceId != null" >
+        PROVINCE_ID,
+      </if>
+      <if test="priority != null" >
+        PRIORITY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="pipleId != null" >
+        #{pipleId,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null" >
+        #{provinceId,jdbcType=INTEGER},
+      </if>
+      <if test="priority != null" >
+        #{priority,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TPipleProvince" >
+    update t_piple_province
+    <set >
+      <if test="priority != null" >
+        PRIORITY = #{priority,jdbcType=INTEGER},
+      </if>
+    </set>
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TPipleProvince" >
+    update t_piple_province
+    set PRIORITY = #{priority,jdbcType=INTEGER}
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateBatch" parameterType="java.util.List">
+  	update t_piple_province
+          <trim prefix="set" suffixOverrides=",">
+          <trim prefix="PRIORITY =case" suffix="end,">
+               <foreach collection="list" item="i" index="index">
+                       <if test="i.priority!=null">
+                        when PROVINCE_ID=#{i.provinceId} and PIPLE_ID=#{i.pipleId}  then #{i.priority}
+                       </if>
+               </foreach>
+            </trim>
+            <trim prefix="OP_STATUS =case" suffix="end,">
+               <foreach collection="list" item="i" index="index">
+                       <if test="i.opStatus!=null">
+                        when PROVINCE_ID=#{i.provinceId} and PIPLE_ID=#{i.pipleId}  then #{i.opStatus}
+                       </if>
+               </foreach>
+            </trim>
+           </trim>
+          where
+          <foreach collection="list" separator="or" item="i" index="index" >
+            PROVINCE_ID=#{i.provinceId} and PIPLE_ID=#{i.pipleId}
+        </foreach>
+  </update>
+</mapper>

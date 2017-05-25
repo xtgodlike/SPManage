@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.PipleMobileLimitDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TPipleMobileLimit" >
+    <id column="PIPLE_ID" property="pipleId" jdbcType="VARCHAR" />
+    <result column="TRADE_DAY" property="tradeDay" jdbcType="INTEGER" />
+    <result column="TRADE_MONTH" property="tradeMonth" jdbcType="INTEGER" />
+    <result column="SUCCESS_NUM_DAY" property="successNumDay" jdbcType="INTEGER" />
+    <result column="SUCCESS_NUM_MONTH" property="successNumMonth" jdbcType="INTEGER" />
+    <result column="REQ_NUM_DAY" property="reqNumDay" jdbcType="INTEGER" />
+    <result column="REQ_NUM_MONTH" property="reqNumMonth" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PIPLE_ID, TRADE_DAY, TRADE_MONTH,SUCCESS_NUM_DAY,SUCCESS_NUM_MONTH,REQ_NUM_DAY,REQ_NUM_MONTH
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_piple_mobile_limit
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_piple_mobile_limit
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TPipleMobileLimit" >
+    insert into t_piple_mobile_limit (PIPLE_ID, TRADE_DAY, TRADE_MONTH,SUCCESS_NUM_DAY,SUCCESS_NUM_MONTH,REQ_NUM_DAY,REQ_NUM_MONTH
+      )
+    values (#{pipleId,jdbcType=VARCHAR}, #{tradeDay,jdbcType=INTEGER}, #{tradeMonth,jdbcType=INTEGER},#{successNumDay,jdbcType=INTEGER}, #{successNumMonth,jdbcType=INTEGER},#{reqNumDay,jdbcType=INTEGER}, #{reqNumMonth,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TPipleMobileLimit" >
+    insert into t_piple_mobile_limit
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="pipleId != null" >
+        PIPLE_ID,
+      </if>
+      <if test="tradeDay != null" >
+        TRADE_DAY,
+      </if>
+      <if test="tradeMonth != null" >
+        TRADE_MONTH,
+      </if>
+      <if test="successNumDay != null" >
+        SUCCESS_NUM_DAY,
+      </if>
+      <if test="successNumMonth != null" >
+        SUCCESS_NUM_MONTH,
+      </if>
+      <if test="reqNumDay != null" >
+        REQ_NUM_DAY,
+      </if>
+      <if test="reqNumMonth != null" >
+        REQ_NUM_MONTH,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="pipleId != null" >
+        #{pipleId,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeDay != null" >
+        #{tradeDay,jdbcType=INTEGER},
+      </if>
+      <if test="tradeMonth != null" >
+        #{tradeMonth,jdbcType=INTEGER},
+      </if>
+      <if test="successNumDay != null" >
+        #{SUCCESS_NUM_DAY,jdbcType=INTEGER},
+      </if>
+      <if test="successNumMonth != null" >
+        #{SUCCESS_NUM_MONTH,jdbcType=INTEGER},
+      </if>
+      <if test="reqNumDay != null" >
+        #{REQ_NUM_DAY,jdbcType=INTEGER},
+      </if>
+      <if test="reqNumMonth != null" >
+        #{REQ_NUM_MONTH,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TPipleMobileLimit" >
+    update t_piple_mobile_limit
+    <set >
+      <if test="tradeDay != null" >
+        TRADE_DAY = #{tradeDay,jdbcType=INTEGER},
+      </if>
+      <if test="tradeMonth != null" >
+        TRADE_MONTH = #{tradeMonth,jdbcType=INTEGER},
+      </if>
+      <if test="successNumDay != null" >
+        SUCCESS_NUM_DAY = #{successNumDay,jdbcType=INTEGER},
+      </if>
+      <if test="successNumMonth != null" >
+        SUCCESS_NUM_MONTH = #{successNumMonth,jdbcType=INTEGER},
+      </if>
+      <if test="reqNumDay != null" >
+        REQ_NUM_DAY = #{reqNumDay,jdbcType=INTEGER},
+      </if>
+      <if test="reqNumMonth != null" >
+        REQ_NUM_MONTH = #{reqNumMonth,jdbcType=INTEGER},
+      </if>
+    </set>
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TPipleMobileLimit" >
+    update t_piple_mobile_limit
+    set TRADE_DAY = #{tradeDay,jdbcType=INTEGER},
+      TRADE_MONTH = #{tradeMonth,jdbcType=INTEGER},
+      SUCCESS_NUM_DAY = #{successNumDay,jdbcType=INTEGER},
+      SUCCESS_NUM_MONTH = #{successNumMonth,jdbcType=INTEGER},
+      REQ_NUM_DAY = #{reqNumDay,jdbcType=INTEGER},
+      REQ_NUM_MONTH = #{reqNumMonth,jdbcType=INTEGER}
+    where PIPLE_ID = #{pipleId,jdbcType=VARCHAR}
+  </update>
+</mapper>

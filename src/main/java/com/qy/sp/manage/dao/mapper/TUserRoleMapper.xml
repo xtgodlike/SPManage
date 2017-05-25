@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.UserRoleDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TUserRole" >
+    <id column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+    <id column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="T_U_USER_ID" property="tUUserId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ROLE_ID, USER_ID, T_U_USER_ID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.qy.sp.manage.dto.TUserRoleKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_role
+    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+      and USER_ID = #{userId,jdbcType=VARCHAR}
+  </select>
+  <select id="loadRoleByUserId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  	SELECT 
+	<include refid="Base_Column_List" />
+	FROM T_USER_ROLE WHERE USER_ID = #{userId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.qy.sp.manage.dto.TUserRoleKey" >
+    delete from t_user_role
+    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+      and USER_ID = #{userId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByRoleId" parameterType="java.lang.String" >
+    delete from t_user_role
+    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByUserId" parameterType="java.lang.String" >
+    delete from t_user_role
+    where  USER_ID = #{userId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TUserRole" >
+    insert into t_user_role (ROLE_ID, USER_ID, T_U_USER_ID
+      )
+    values (#{roleId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{tUUserId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TUserRole" >
+    insert into t_user_role
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="roleId != null" >
+        ROLE_ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="tUUserId != null" >
+        T_U_USER_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="roleId != null" >
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="tUUserId != null" >
+        #{tUUserId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TUserRole" >
+    update t_user_role
+    <set >
+      <if test="tUUserId != null" >
+        T_U_USER_ID = #{tUUserId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+      and USER_ID = #{userId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TUserRole" >
+    update t_user_role
+    set T_U_USER_ID = #{tUUserId,jdbcType=VARCHAR}
+    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+      and USER_ID = #{userId,jdbcType=VARCHAR}
+  </update>
+</mapper>

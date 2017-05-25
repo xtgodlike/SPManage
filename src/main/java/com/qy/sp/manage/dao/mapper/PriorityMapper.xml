@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.PriorityDataDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.PiplePriority" >
+    <id column="HOST_ID" property="hostId" jdbcType="INTEGER" />
+    <id column="PROVINCE_ID" property="provinceId" jdbcType="INTEGER" />
+    <result column="PIPLE_ID" property="pipleId" jdbcType="INTEGER" />
+    <result column="PRIORITY" property="priority" jdbcType="INTEGER" />
+    <result column="OP_STATUS" property="opStatus" jdbcType="INTEGER" />
+    <result column="HOST_NAME" property="hostName" jdbcType="VARCHAR" />
+    <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+    <result column="PIPLE_NAME" property="pipleName" jdbcType="VARCHAR" />
+    <result column="PIPLE_NUMBER" property="pipleNumber" jdbcType="VARCHAR" />
+    <result column="PIPLE_TYPE" property="pipleType" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="getPiplePriorityList"  resultMap="BaseResultMap"  parameterType="com.qy.sp.manage.dto.PiplePriority">
+    SELECT t4.HOST_ID HOST_ID,t4.HOST_NAME HOST_NAME,t3.PROVINCE_ID PROVINCE_ID,t3.PROVINCE_NAME PROVINCE_NAME,
+	t1.PIPLE_ID PIPLE_ID,t1.PIPLE_NAME PIPLE_NAME,t1.PIPLE_NUMBER PIPLE_NUMBER,t1.PIPLE_TYPE PIPLE_TYPE,t2.PRIORITY PRIORITY,t2.OP_STATUS OP_STATUS
+	FROM t_piple t1,t_piple_province t2,t_province t3,t_host t4
+	WHERE t1.PIPLE_ID = t2.PIPLE_ID
+	AND t1.HOST_ID = t4.HOST_ID
+	AND t2.PROVINCE_ID = t3.PROVINCE_ID
+	AND t2.OP_STATUS = 1
+	AND t1.HOST_ID =  #{hostId,jdbcType=INTEGER}
+	AND t2.PROVINCE_ID =  #{provinceId,jdbcType=INTEGER}
+	ORDER BY t2.PRIORITY DESC
+  </select>
+  
+</mapper>

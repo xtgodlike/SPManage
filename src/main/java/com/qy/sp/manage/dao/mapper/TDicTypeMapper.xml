@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.DicTypeDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TDicType" >
+    <id column="DTYPE_ID" property="dtypeId" jdbcType="INTEGER" />
+    <result column="DTYPE_NAME" property="dtypeName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    DTYPE_ID, DTYPE_NAME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_dic_type
+    where DTYPE_ID = #{dtypeId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_dic_type
+    where DTYPE_ID = #{dtypeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TDicType" >
+    insert into t_dic_type (DTYPE_ID, DTYPE_NAME)
+    values (#{dtypeId,jdbcType=INTEGER}, #{dtypeName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TDicType" >
+    insert into t_dic_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dtypeId != null" >
+        DTYPE_ID,
+      </if>
+      <if test="dtypeName != null" >
+        DTYPE_NAME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dtypeId != null" >
+        #{dtypeId,jdbcType=INTEGER},
+      </if>
+      <if test="dtypeName != null" >
+        #{dtypeName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TDicType" >
+    update t_dic_type
+    <set >
+      <if test="dtypeName != null" >
+        DTYPE_NAME = #{dtypeName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where DTYPE_ID = #{dtypeId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TDicType" >
+    update t_dic_type
+    set DTYPE_NAME = #{dtypeName,jdbcType=VARCHAR}
+    where DTYPE_ID = #{dtypeId,jdbcType=INTEGER}
+  </update>
+</mapper>

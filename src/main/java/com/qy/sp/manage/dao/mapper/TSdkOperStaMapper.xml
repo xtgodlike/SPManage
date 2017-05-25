@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.SdkOperStaDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TSdkOperSta" >
+    <id column="OPER_DATE" property="operDate" jdbcType="DATE" />
+    <id column="CHANNEL_ID" property="channelId" jdbcType="VARCHAR" />
+    <id column="APP_ID" property="appId" jdbcType="VARCHAR" />
+    <id column="PROVINCE_ID" property="provinceId" jdbcType="INTEGER" />
+    <id column="HOST_ID" property="hostId" jdbcType="INTEGER" />
+    <id column="STA_TYPE" property="staType" jdbcType="INTEGER" />
+    <result column="STA_NUM" property="staNum" jdbcType="INTEGER" />
+  </resultMap>
+  
+   <resultMap id="StaSdkDailyMap" type="com.qy.sp.manage.dto.TStaSdkDaily" >
+    <id column="COMP_DATE" property="compDate" jdbcType="DATE" />
+    <id column="APP_ID" property="appId" jdbcType="VARCHAR" />
+    <id column="CHANNEL_ID" property="channelId" jdbcType="VARCHAR" />
+    <id column="PROVINCE_ID" property="provinceId" jdbcType="INTEGER" />
+    <result column="START_USER_NUM" property="startUserNum" jdbcType="INTEGER" />
+    <result column="ADD_USER_NUM" property="addUserNum" jdbcType="INTEGER" />
+    <result column="PAYREQ_USER_NUM" property="payreqUserNum" jdbcType="INTEGER" />
+    <result column="PAYSUC_USER_NUM" property="paysucUserNum" jdbcType="INTEGER" />
+    <result column="UNI_PUSER_NUM" property="uniPuserNum" jdbcType="INTEGER" />
+    <result column="UNI_PSUSER_NUM" property="uniPSuserNum" jdbcType="INTEGER" />
+    <result column="UNI_PAYSUC_RATIO" property="uniPaysucRatio" jdbcType="DOUBLE" />
+    <result column="CM_PUSER_NUM" property="cmPuserNum" jdbcType="INTEGER" />
+    <result column="CM_PSUSER_NUM" property="cmPSuserNum" jdbcType="INTEGER" />
+    <result column="CM_PAYSUC_RATIO" property="cmPaysucRatio" jdbcType="DOUBLE" />
+    <result column="TELE_PUSER_NUM" property="telePuserNum" jdbcType="INTEGER" />
+    <result column="TELE_PSUSER_NUM" property="telePSuserNum" jdbcType="INTEGER" />
+    <result column="TELE_PAYSUC_RATIO" property="telePaysucRatio" jdbcType="DOUBLE" />
+    <result column="INFO_FEE" property="infoFee" jdbcType="DOUBLE" />
+    <result column="PAY_RATIO" property="payRatio" jdbcType="DOUBLE" />
+    <result column="PAY_SUC_RATIO" property="paySucRatio" jdbcType="DOUBLE" />
+    <result column="TRANSLATE_RATIO" property="translateRatio" jdbcType="DOUBLE" />
+    <result column="ARPU" property="arpu" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    OPER_DATE, CHANNEL_ID, APP_ID, PROVINCE_ID, HOST_ID, STA_TYPE, STA_NUM
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.qy.sp.manage.dto.TSdkOperStaKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sdk_oper_sta
+    where OPER_DATE = #{operDate,jdbcType=DATE}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and APP_ID = #{appId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+      and HOST_ID = #{hostId,jdbcType=INTEGER}
+      and STA_TYPE = #{staType,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getStaSdkDailyData"  resultMap="StaSdkDailyMap"   parameterType="java.lang.String" >
+  	SELECT a.OPER_DATE COMP_DATE,a.APP_ID ,a.CHANNEL_ID,a.PROVINCE_ID
+  	  ,IF(a.SN IS NULL,0,a.SN) START_USER_NUM ,IF(b.SN IS NULL,0,b.SN) ADD_USER_NUM,IF(c.SN IS NULL,0,c.SN) PAYREQ_USER_NUM,IF(d.SN IS NULL,0,d.SN) PAYSUC_USER_NUM
+	 ,IF(e.SN IS NULL,0,e.SN) CM_PUSER_NUM,IF(f.SN IS NULL,0,f.SN) CM_PSUSER_NUM, IF(f.SN IS NULL,0,f.SN/e.SN) CM_PAYSUC_RATIO
+	 ,IF(g.SN IS NULL,0,g.SN) UNI_PUSER_NUM,IF(h.SN IS NULL,0,h.SN) UNI_PSUSER_NUM,IF(h.SN IS NULL,0,h.SN/g.SN) UNI_PAYSUC_RATIO
+	 ,IF(i.SN IS NULL,0,i.SN) TELE_PUSER_NUM,IF(j.SN IS NULL,0,j.SN) TELE_PSUSER_NUM, IF(j.SN IS NULL,0,j.SN/i.SN) TELE_PAYSUC_RATIO
+	 ,IF(k.ZFEE IS NULL,0,k.ZFEE) INFO_FEE,IF(c.SN IS NULL OR a.SN IS NULL,0,c.SN/a.SN) PAY_RATIO,IF((c.SN IS NULL OR d.SN IS NULL),0,d.SN/c.SN) PAY_SUC_RATIO
+	 ,IF((d.SN IS NULL OR a.SN IS NULL),0,d.SN/a.SN) TRANSLATE_RATIO,IF((k.ZFEE IS NULL OR a.SN IS NULL),0,k.ZFEE/a.SN) ARPU
+	FROM 
+	(SELECT t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID,SUM(t.STA_NUM) SN FROM t_sdk_oper_sta t WHERE t.STA_TYPE = 1  GROUP BY t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID) a
+	LEFT JOIN (SELECT t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID,SUM(t.STA_NUM) SN FROM t_sdk_oper_sta t WHERE t.STA_TYPE = 2  GROUP BY t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID) b
+	ON (DATE(a.OPER_DATE) = DATE(b.OPER_DATE) AND a.APP_ID = b.APP_ID AND a.CHANNEL_ID = b.CHANNEL_ID AND a.PROVINCE_ID = b.PROVINCE_ID )
+	LEFT JOIN (SELECT t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID,SUM(t.STA_NUM) SN FROM t_sdk_oper_sta t WHERE t.STA_TYPE = 3  GROUP BY t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID) c
+	ON (DATE(a.OPER_DATE) = DATE(c.OPER_DATE) AND a.APP_ID = c.APP_ID AND a.CHANNEL_ID = c.CHANNEL_ID AND a.PROVINCE_ID = c.PROVINCE_ID)
+	LEFT JOIN (SELECT t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID,SUM(t.STA_NUM) SN FROM t_sdk_oper_sta t WHERE t.STA_TYPE = 4  GROUP BY t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID) d
+	ON (DATE(a.OPER_DATE) = DATE(d.OPER_DATE) AND a.APP_ID = d.APP_ID AND a.CHANNEL_ID = d.CHANNEL_ID AND a.PROVINCE_ID = d.PROVINCE_ID)
+	
+	LEFT JOIN (SELECT t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID,SUM(t.STA_NUM) SN FROM t_sdk_oper_sta t WHERE t.STA_TYPE = 3 AND t.HOST_ID = 2 GROUP BY t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID) e
+	ON (DATE(a.OPER_DATE) = DATE(e.OPER_DATE) AND a.APP_ID = e.APP_ID AND a.CHANNEL_ID = e.CHANNEL_ID AND a.PROVINCE_ID = e.PROVINCE_ID)
+	LEFT JOIN (SELECT t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID,SUM(t.STA_NUM) SN FROM t_sdk_oper_sta t WHERE t.STA_TYPE = 4 AND t.HOST_ID = 2 GROUP BY t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID) f
+	ON (DATE(a.OPER_DATE) = DATE(f.OPER_DATE) AND a.APP_ID = f.APP_ID AND a.CHANNEL_ID = f.CHANNEL_ID AND a.PROVINCE_ID = f.PROVINCE_ID)
+	
+	LEFT JOIN (SELECT t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID,SUM(t.STA_NUM) SN FROM t_sdk_oper_sta t WHERE t.STA_TYPE = 3 AND t.HOST_ID = 1 GROUP BY t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID) g
+	ON (DATE(a.OPER_DATE) = DATE(g.OPER_DATE) AND a.APP_ID = g.APP_ID AND a.CHANNEL_ID = g.CHANNEL_ID AND a.PROVINCE_ID = g.PROVINCE_ID)
+	LEFT JOIN (SELECT t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID,SUM(t.STA_NUM) SN FROM t_sdk_oper_sta t WHERE t.STA_TYPE = 4 AND t.HOST_ID = 1 GROUP BY t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID) h
+	ON (DATE(a.OPER_DATE) = DATE(h.OPER_DATE) AND a.APP_ID = h.APP_ID AND a.CHANNEL_ID = h.CHANNEL_ID AND a.PROVINCE_ID = h.PROVINCE_ID)
+	
+	LEFT JOIN (SELECT t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID,SUM(t.STA_NUM) SN FROM t_sdk_oper_sta t WHERE t.STA_TYPE = 3 AND t.HOST_ID = 3 GROUP BY t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID) i
+	ON (DATE(a.OPER_DATE) = DATE(i.OPER_DATE) AND a.APP_ID = i.APP_ID AND a.CHANNEL_ID = i.CHANNEL_ID AND a.PROVINCE_ID = i.PROVINCE_ID)
+	LEFT JOIN (SELECT t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID,SUM(t.STA_NUM) SN FROM t_sdk_oper_sta t WHERE t.STA_TYPE = 4 AND t.HOST_ID = 3 GROUP BY t.OPER_DATE,t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID) j
+	ON (DATE(a.OPER_DATE) = DATE(j.OPER_DATE) AND a.APP_ID = j.APP_ID AND a.CHANNEL_ID = j.CHANNEL_ID AND a.PROVINCE_ID = j.PROVINCE_ID)
+	
+	LEFT JOIN (SELECT t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID,SUM(t.amount) ZFEE FROM t_order t WHERE t.ORDER_STATUS = 2  
+	<if test="_parameter != null and _parameter != ''" > 
+		AND DATE(t.CREATE_TIME) = #{_parameter}
+	 </if> 
+	GROUP BY t.APP_ID,t.CHANNEL_ID,t.PROVINCE_ID ) k
+	ON (a.APP_ID = k.APP_ID AND a.CHANNEL_ID = k.CHANNEL_ID AND a.PROVINCE_ID = k.PROVINCE_ID)
+	
+	WHERE  DATE(a.OPER_DATE) = #{_parameter} ORDER BY DATE(a.OPER_DATE),a.APP_ID,a.CHANNEL_ID,a.PROVINCE_ID;
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="com.qy.sp.manage.dto.TSdkOperStaKey" >
+    delete from t_sdk_oper_sta
+    where OPER_DATE = #{operDate,jdbcType=DATE}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and APP_ID = #{appId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+      and HOST_ID = #{hostId,jdbcType=INTEGER}
+      and STA_TYPE = #{staType,jdbcType=INTEGER}
+  </delete>
+  
+   <delete id="deleteByDate" parameterType="java.util.Date" >
+    delete from t_sdk_oper_sta
+    where OPER_DATE = #{operDate,jdbcType=DATE}
+  </delete>
+  
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TSdkOperSta" >
+    insert into t_sdk_oper_sta (OPER_DATE, CHANNEL_ID, APP_ID, 
+      PROVINCE_ID, HOST_ID, STA_TYPE, 
+      STA_NUM)
+    values (#{operDate,jdbcType=DATE}, #{channelId,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, 
+      #{provinceId,jdbcType=INTEGER}, #{hostId,jdbcType=INTEGER}, #{staType,jdbcType=INTEGER}, 
+      #{staNum,jdbcType=INTEGER})
+  </insert>
+  
+  <insert id="insertBatch"  parameterType="java.util.List">  
+    insert into  t_sdk_oper_sta (OPER_DATE, CHANNEL_ID, APP_ID, PROVINCE_ID,HOST_ID,STA_NUM,STA_TYPE)  
+    values  
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.operDate},#{item.channelId},#{item.appId},#{item.provinceId},#{item.hostId},#{item.staNum},#{item.staType})  
+    </foreach>  
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TSdkOperSta" >
+    insert into t_sdk_oper_sta
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="operDate != null" >
+        OPER_DATE,
+      </if>
+      <if test="channelId != null" >
+        CHANNEL_ID,
+      </if>
+      <if test="appId != null" >
+        APP_ID,
+      </if>
+      <if test="provinceId != null" >
+        PROVINCE_ID,
+      </if>
+      <if test="hostId != null" >
+        HOST_ID,
+      </if>
+      <if test="staType != null" >
+        STA_TYPE,
+      </if>
+      <if test="staNum != null" >
+        STA_NUM,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="operDate != null" >
+        #{operDate,jdbcType=DATE},
+      </if>
+      <if test="channelId != null" >
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null" >
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null" >
+        #{provinceId,jdbcType=INTEGER},
+      </if>
+      <if test="hostId != null" >
+        #{hostId,jdbcType=INTEGER},
+      </if>
+      <if test="staType != null" >
+        #{staType,jdbcType=INTEGER},
+      </if>
+      <if test="staNum != null" >
+        #{staNum,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TSdkOperSta" >
+    update t_sdk_oper_sta
+    <set >
+      <if test="staNum != null" >
+        STA_NUM = #{staNum,jdbcType=INTEGER},
+      </if>
+    </set>
+    where OPER_DATE = #{operDate,jdbcType=DATE}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and APP_ID = #{appId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+      and HOST_ID = #{hostId,jdbcType=INTEGER}
+      and STA_TYPE = #{staType,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TSdkOperSta" >
+    update t_sdk_oper_sta
+    set STA_NUM = #{staNum,jdbcType=INTEGER}
+    where OPER_DATE = #{operDate,jdbcType=DATE}
+      and CHANNEL_ID = #{channelId,jdbcType=VARCHAR}
+      and APP_ID = #{appId,jdbcType=VARCHAR}
+      and PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+      and HOST_ID = #{hostId,jdbcType=INTEGER}
+      and STA_TYPE = #{staType,jdbcType=INTEGER}
+  </update>
+  
+</mapper>

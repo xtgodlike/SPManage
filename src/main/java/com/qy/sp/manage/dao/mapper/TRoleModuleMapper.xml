@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.RoleModuleDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TRoleModuleKey" >
+    <id column="MODULE_ID" property="moduleId" jdbcType="VARCHAR" />
+    <id column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="RoleModuleObjectMap" type="com.qy.sp.manage.dto.RoleModuleObject" >
+    <result column="MODULE_ID" property="moduleId" jdbcType="VARCHAR" />
+    <result column="MODULE_CODE" property="moduleCode" jdbcType="VARCHAR" />
+    <result column="PARENT_M_ID" property="parentMId" jdbcType="VARCHAR" />
+    <result column="MODULE_NAME" property="moduleName" jdbcType="VARCHAR" />
+    <result column="MODULE_LINK" property="moduleLink" jdbcType="VARCHAR" />
+    <result column="MODULE_DESC" property="moduleDesc" jdbcType="VARCHAR" />
+    <result column="MODULE_LEVEL" property="moduleLevel" jdbcType="INTEGER" />
+    <result column="SHOW_SEQ" property="showSeq" jdbcType="INTEGER" />
+    <result column="MODULE_TYPE" property="moduleType" jdbcType="INTEGER" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="CREATOR" property="creator" jdbcType="VARCHAR" />
+    <result column="ENABLE_TIME" property="enableTime" jdbcType="TIMESTAMP" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="com.qy.sp.manage.dto.TRoleModuleKey" >
+    delete from t_role_module
+    where MODULE_ID = #{moduleId,jdbcType=VARCHAR}
+      and ROLE_ID = #{roleId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByModuleId" parameterType="java.lang.String" >
+    delete from t_role_module
+    where MODULE_ID = #{moduleId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByRoleId" parameterType="java.lang.String" >
+    delete from t_role_module
+    where ROLE_ID = #{roleId,jdbcType=VARCHAR}
+  </delete> 
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TRoleModuleKey" >
+    insert into t_role_module (MODULE_ID, ROLE_ID)
+    values (#{moduleId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TRoleModuleKey" >
+    insert into t_role_module
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="moduleId != null" >
+        MODULE_ID,
+      </if>
+      <if test="roleId != null" >
+        ROLE_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="moduleId != null" >
+        #{moduleId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="getRoleModuleObjectByRoleId"  resultMap="RoleModuleObjectMap" parameterType="java.lang.String" >
+    SELECT T.MODULE_ID as MODULE_ID,T.PARENT_M_ID as PARENT_M_ID,T.MODULE_NAME as MODULE_NAME,
+    T.STATUS as STATUS,T.MODULE_LEVEL as MODULE_LEVEL,E.ROLE_ID as ROLE_ID
+	FROM T_MODULE T LEFT JOIN T_ROLE_MODULE E ON (E.MODULE_ID = T.MODULE_ID AND E.ROLE_ID = #{roleId,jdbcType=VARCHAR} ) 
+	WHERE T.STATUS = '1' ORDER BY T.MODULE_LEVEL,T.SHOW_SEQ ASC
+  </select>
+</mapper>

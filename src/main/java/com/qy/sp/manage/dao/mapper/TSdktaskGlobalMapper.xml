@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.SdktaskGlobalDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TSdktaskGlobal" >
+    <id column="TASK_ID" property="taskId" jdbcType="VARCHAR" />
+    <id column="TASK_STEP" property="taskStep" jdbcType="VARCHAR" />
+    <result column="TASK_EXECUTE" property="taskExecute" jdbcType="INTEGER" />
+     <result column="TASK_NAME" property="taskName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    TASK_ID, TASK_STEP, TASK_EXECUTE
+  </sql>
+  
+  <select id="getSdkTaskGlobalList" resultMap="BaseResultMap">
+    SELECT 
+	t1.TASK_ID,t1.TASK_STEP,TASK_EXECUTE
+	FROM t_sdktask_global t1,t_sdktask t2 
+	WHERE  t1.TASK_ID = t2.TASK_ID
+     <if test="sdktaskGlobal.taskStep != null and sdktaskGlobal.taskStep != ''" >
+       AND (t1.TASK_STEP = #{sdktaskGlobal.taskStep} OR t1.TASK_STEP IS NULL OR t1.TASK_STEP = '') 
+    </if>
+     <if test="sdktaskGlobal.taskId != null and sdktaskGlobal.taskId != ''" >
+       AND t1.TASK_ID = #{sdktaskGlobal.taskId}
+    </if>
+	   LIMIT #{start},#{end}
+  </select>
+  
+  <select id="getSdkTaskGlobalItems" resultType="java.lang.Integer" parameterType="com.qy.sp.manage.dto.TSdktaskGlobal">
+    SELECT count(*) FROM t_sdktask_global 
+	WHERE 1=1 
+     <if test="taskStep != null and taskStep != ''" >
+       AND (TASK_STEP = #{taskStep} OR TASK_STEP IS NULL OR TASK_STEP = '') 
+    </if>
+     <if test="taskId != null and taskId != ''" >
+       AND TASK_ID = #{taskId}
+    </if>
+  </select>
+  
+  <select id="selectByTaskId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sdktask_global
+    where TASK_ID = #{taskId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.qy.sp.manage.dto.TSdktaskGlobalKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sdktask_global
+    where TASK_ID = #{taskId,jdbcType=VARCHAR}
+      and TASK_STEP = #{taskStep,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.qy.sp.manage.dto.TSdktaskGlobalKey" >
+    delete from t_sdktask_global
+    where TASK_ID = #{taskId,jdbcType=VARCHAR}
+      and TASK_STEP = #{taskStep,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TSdktaskGlobal" >
+    insert into t_sdktask_global (TASK_ID, TASK_STEP, TASK_EXECUTE
+      )
+    values (#{taskId,jdbcType=VARCHAR}, #{taskStep,jdbcType=VARCHAR}, #{taskExecute,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TSdktaskGlobal" >
+    insert into t_sdktask_global
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        TASK_ID,
+      </if>
+      <if test="taskStep != null" >
+        TASK_STEP,
+      </if>
+      <if test="taskExecute != null" >
+        TASK_EXECUTE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskStep != null" >
+        #{taskStep,jdbcType=VARCHAR},
+      </if>
+      <if test="taskExecute != null" >
+        #{taskExecute,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TSdktaskGlobal" >
+    update t_sdktask_global
+    <set >
+      <if test="taskExecute != null" >
+        TASK_EXECUTE = #{taskExecute,jdbcType=INTEGER},
+      </if>
+    </set>
+    where TASK_ID = #{taskId,jdbcType=VARCHAR}
+      and TASK_STEP = #{taskStep,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TSdktaskGlobal" >
+    update t_sdktask_global
+    set TASK_EXECUTE = #{taskExecute,jdbcType=INTEGER}
+    where TASK_ID = #{taskId,jdbcType=VARCHAR}
+      and TASK_STEP = #{taskStep,jdbcType=VARCHAR}
+  </update>
+</mapper>

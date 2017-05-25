@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.CpDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TCp" >
+    <id column="CP_ID" property="cpId" jdbcType="VARCHAR" />
+    <result column="FULL_NAME" property="fullName" jdbcType="VARCHAR" />
+    <result column="ABBR_NAME" property="abbrName" jdbcType="VARCHAR" />
+    <result column="CONTACTOR" property="contactor" jdbcType="VARCHAR" />
+    <result column="TEL" property="tel" jdbcType="VARCHAR" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="QQ" property="qq" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CP_ID, FULL_NAME, ABBR_NAME, CONTACTOR, TEL, EMAIL, QQ
+  </sql>
+  <select id="getAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_cp
+  </select>
+  
+   <select id="selectByFullName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_cp
+    where FULL_NAME = #{fullName,jdbcType=VARCHAR}
+  </select>
+  <select id="getCpList" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM t_cp 
+	WHERE 1=1
+	<if test="cp.fullName != null and cp.fullName != ''" >
+       AND FULL_NAME LIKE  "%"#{cp.fullName}"%"
+    </if>
+    <if test="cp.contactor != null and cp.contactor != ''" >
+       AND CONTACTOR = #{cp.contactor}
+    </if>
+    <if test="cp.tel != null and cp.tel != ''" >
+       AND TEL = #{cp.tel}
+    </if>
+	   LIMIT #{start},#{end}
+  </select>
+  <select id="getCpItems" resultType="java.lang.Integer" parameterType="com.qy.sp.manage.dto.TCp">
+    SELECT count(*) FROM t_cp 
+	WHERE 1=1
+	<if test="fullName != null and fullName != ''" >
+       AND FULL_NAME LIKE  "%"#{fullName}"%"
+    </if>
+    <if test="contactor != null and contactor != ''" >
+       AND CONTACTOR = #{contactor}
+    </if>
+    <if test="tel != null and tel != ''" >
+       AND TEL = #{tel}
+    </if>		
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_cp
+    where CP_ID = #{cpId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_cp
+    where CP_ID = #{cpId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TCp" >
+    insert into t_cp (CP_ID, FULL_NAME, ABBR_NAME, 
+      CONTACTOR, TEL, EMAIL, 
+      QQ)
+    values (#{cpId,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, #{abbrName,jdbcType=VARCHAR}, 
+      #{contactor,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{qq,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TCp" >
+    insert into t_cp
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cpId != null" >
+        CP_ID,
+      </if>
+      <if test="fullName != null" >
+        FULL_NAME,
+      </if>
+      <if test="abbrName != null" >
+        ABBR_NAME,
+      </if>
+      <if test="contactor != null" >
+        CONTACTOR,
+      </if>
+      <if test="tel != null" >
+        TEL,
+      </if>
+      <if test="email != null" >
+        EMAIL,
+      </if>
+      <if test="qq != null" >
+        QQ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cpId != null" >
+        #{cpId,jdbcType=VARCHAR},
+      </if>
+      <if test="fullName != null" >
+        #{fullName,jdbcType=VARCHAR},
+      </if>
+      <if test="abbrName != null" >
+        #{abbrName,jdbcType=VARCHAR},
+      </if>
+      <if test="contactor != null" >
+        #{contactor,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null" >
+        #{qq,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TCp" >
+    update t_cp
+    <set >
+      <if test="fullName != null" >
+        FULL_NAME = #{fullName,jdbcType=VARCHAR},
+      </if>
+      <if test="abbrName != null" >
+        ABBR_NAME = #{abbrName,jdbcType=VARCHAR},
+      </if>
+      <if test="contactor != null" >
+        CONTACTOR = #{contactor,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        TEL = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null" >
+        QQ = #{qq,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where CP_ID = #{cpId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TCp" >
+    update t_cp
+    set FULL_NAME = #{fullName,jdbcType=VARCHAR},
+      ABBR_NAME = #{abbrName,jdbcType=VARCHAR},
+      CONTACTOR = #{contactor,jdbcType=VARCHAR},
+      TEL = #{tel,jdbcType=VARCHAR},
+      EMAIL = #{email,jdbcType=VARCHAR},
+      QQ = #{qq,jdbcType=VARCHAR}
+    where CP_ID = #{cpId,jdbcType=VARCHAR}
+  </update>
+</mapper>

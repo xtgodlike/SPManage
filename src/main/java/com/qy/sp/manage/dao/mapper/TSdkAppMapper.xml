@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qy.sp.manage.dao.impl.SdkAppDao" >
+  <resultMap id="BaseResultMap" type="com.qy.sp.manage.dto.TSdkApp" >
+    <id column="APP_ID" property="appId" jdbcType="VARCHAR" />
+    <result column="CP_ID" property="cpId" jdbcType="VARCHAR" />
+    <result column="APP_NAME" property="appName" jdbcType="VARCHAR" />
+    <result column="APP_PACKETNAME" property="appPacketname" jdbcType="VARCHAR" />
+    <result column="APP_SIGIN" property="appSigin" jdbcType="VARCHAR" />
+    <result column="APP_SIZE" property="appSize" jdbcType="LONGVARCHAR" />
+    <result column="APP_STATUS" property="appStatus" jdbcType="INTEGER" />
+    <result column="APK_ID" property="apkId" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="MOD_TIME" property="modTime" jdbcType="TIMESTAMP" />
+    <result column="CP_NAME" property="cpName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.qy.sp.manage.dto.TSdkApp" extends="BaseResultMap" >
+    <result column="APP_SIZE" property="appSize" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    APP_ID, CP_ID, APP_NAME, APP_PACKETNAME, APP_SIGIN,APP_SIZE, APP_STATUS, APK_ID, CREATE_TIME, 
+    MOD_TIME
+  </sql>
+  <sql id="Blob_Column_List" >
+    APP_SIZE
+  </sql>
+  
+  <select id="getAppList" resultMap="BaseResultMap">
+    SELECT 
+    a.APP_ID, a.CP_ID, a.APP_NAME, a.APP_PACKETNAME, a.APP_SIGIN, a.APP_SIZE,a.APP_STATUS, a.APK_ID, a.CREATE_TIME, a.MOD_TIME,c.FULL_NAME AS CP_NAME
+    FROM t_sdk_app a,t_cp c
+	WHERE a.CP_ID = c.CP_ID
+	<if test="app.appName != null and app.appName != ''" >
+       AND a.APP_NAME LIKE  "%"#{app.appName}"%"
+    </if>
+    <if test="app.appStatus != null and app.appStatus != ''" >
+       AND a.APP_STATUS = #{app.appStatus}
+    </if>
+    <if test="app.cpId != null and app.cpId != ''" >
+       AND a.CP_ID = #{app.cpId}
+    </if>
+	   LIMIT #{start},#{end}
+  </select>
+  <select id="getCpAppList" resultMap="BaseResultMap">
+    SELECT 
+    a.APP_ID, a.CP_ID, a.APP_NAME, a.APP_PACKETNAME, a.APP_SIGIN, a.APP_SIZE,a.APP_STATUS, a.APK_ID, a.CREATE_TIME, a.MOD_TIME,c.FULL_NAME AS CP_NAME
+    FROM t_sdk_app a,t_cp c
+    WHERE a.CP_ID = c.CP_ID
+    <if test="app.appName != null and app.appName != ''" >
+       AND a.APP_NAME LIKE  "%"#{app.appName}"%"
+    </if>
+    <if test="app.appStatus != null and app.appStatus != ''" >
+       AND a.APP_STATUS = #{app.appStatus}
+    </if>
+    <if test="app.cpId != null and app.cpId != ''" >
+       AND a.CP_ID = #{app.cpId}
+    </if>
+    <if test="app.cpId == null or app.cpId == ''" >
+       AND a.CP_ID in (SELECT CP_ID FROM t_user_cp WHERE user_id = #{userId,jdbcType=VARCHAR})
+    </if>
+       LIMIT #{start},#{end}
+  </select>   
+  <select id="getAppItems" resultType="java.lang.Integer" >
+   SELECT 
+    count(*)
+    FROM t_sdk_app a,t_cp c
+	WHERE a.CP_ID = c.CP_ID
+	<if test="app.appName != null and app.appName != ''" >
+       AND a.APP_NAME LIKE  "%"#{app.appName}"%"
+    </if>
+    <if test="app.appStatus != null and app.appStatus != ''" >
+       AND a.APP_STATUS = #{app.appStatus}
+    </if>
+    <if test="app.cpId != null and app.cpId != ''" >
+       AND a.CP_ID = #{app.cpId}
+    </if>
+  </select>
+  <select id="getCpAppItems" resultType="java.lang.Integer" >
+   SELECT 
+    count(*)
+    FROM t_sdk_app a,t_cp c
+    WHERE a.CP_ID = c.CP_ID
+    <if test="app.appName != null and app.appName != ''" >
+       AND a.APP_NAME LIKE  "%"#{app.appName}"%"
+    </if>
+    <if test="app.appStatus != null and app.appStatus != ''" >
+       AND a.APP_STATUS = #{app.appStatus}
+    </if>
+    <if test="app.cpId != null and app.cpId != ''" >
+       AND a.CP_ID = #{app.cpId}
+    </if>
+    <if test="app.cpId == null or app.cpId == ''" >
+       AND a.CP_ID in (SELECT CP_ID FROM t_user_cp WHERE user_id = #{userId,jdbcType=VARCHAR})
+    </if>
+  </select>  
+  <select id="getAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_sdk_app
+  </select>
+  <select id="selectByAppName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sdk_app
+    where APP_NAME = #{appName,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByPacketName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sdk_app
+    where APP_PACKETNAME = #{packageName,jdbcType=VARCHAR}
+  </select>    
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_sdk_app
+    where APP_ID = #{appId,jdbcType=VARCHAR}
+  </select>
+  <select id="getUserApps" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sdk_app t
+    where t.CP_ID IN(
+	SELECT CP_ID FROM t_user_cp WHERE user_id = #{userId,jdbcType=VARCHAR}
+	)
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_sdk_app
+    where APP_ID = #{appId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qy.sp.manage.dto.TSdkApp" >
+    insert into t_sdk_app (APP_ID, CP_ID, APP_NAME, 
+      APP_PACKETNAME, APP_SIGIN, APP_STATUS, 
+      APK_ID, CREATE_TIME, MOD_TIME, 
+      APP_SIZE)
+    values (#{appId,jdbcType=VARCHAR}, #{cpId,jdbcType=VARCHAR}, #{appName,jdbcType=VARCHAR}, 
+      #{appPacketname,jdbcType=VARCHAR}, #{appSigin,jdbcType=VARCHAR}, #{appStatus,jdbcType=INTEGER}, 
+      #{apkId,jdbcType=VARCHAR}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+      #{appSize,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qy.sp.manage.dto.TSdkApp" >
+    insert into t_sdk_app
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="appId != null" >
+        APP_ID,
+      </if>
+      <if test="cpId != null" >
+        CP_ID,
+      </if>
+      <if test="appName != null" >
+        APP_NAME,
+      </if>
+      <if test="appPacketname != null" >
+        APP_PACKETNAME,
+      </if>
+      <if test="appSigin != null" >
+        APP_SIGIN,
+      </if>
+      <if test="appStatus != null" >
+        APP_STATUS,
+      </if>
+      <if test="apkId != null" >
+        APK_ID,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="modTime != null" >
+        MOD_TIME,
+      </if>
+      <if test="appSize != null" >
+        APP_SIZE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="appId != null" >
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="cpId != null" >
+        #{cpId,jdbcType=VARCHAR},
+      </if>
+      <if test="appName != null" >
+        #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="appPacketname != null" >
+        #{appPacketname,jdbcType=VARCHAR},
+      </if>
+      <if test="appSigin != null" >
+        #{appSigin,jdbcType=VARCHAR},
+      </if>
+      <if test="appStatus != null" >
+        #{appStatus,jdbcType=INTEGER},
+      </if>
+      <if test="apkId != null" >
+        #{apkId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modTime != null" >
+        #{modTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appSize != null" >
+        #{appSize,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qy.sp.manage.dto.TSdkApp" >
+    update t_sdk_app
+    <set >
+      <if test="cpId != null" >
+        CP_ID = #{cpId,jdbcType=VARCHAR},
+      </if>
+      <if test="appName != null" >
+        APP_NAME = #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="appPacketname != null" >
+        APP_PACKETNAME = #{appPacketname,jdbcType=VARCHAR},
+      </if>
+      <if test="appSigin != null" >
+        APP_SIGIN = #{appSigin,jdbcType=VARCHAR},
+      </if>
+      <if test="appStatus != null" >
+        APP_STATUS = #{appStatus,jdbcType=INTEGER},
+      </if>
+      <if test="apkId != null" >
+        APK_ID = #{apkId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modTime != null" >
+        MOD_TIME = #{modTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appSize != null" >
+        APP_SIZE = #{appSize,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where APP_ID = #{appId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.qy.sp.manage.dto.TSdkApp" >
+    update t_sdk_app
+    set CP_ID = #{cpId,jdbcType=VARCHAR},
+      APP_NAME = #{appName,jdbcType=VARCHAR},
+      APP_PACKETNAME = #{appPacketname,jdbcType=VARCHAR},
+      APP_SIGIN = #{appSigin,jdbcType=VARCHAR},
+      APP_STATUS = #{appStatus,jdbcType=INTEGER},
+      APK_ID = #{apkId,jdbcType=VARCHAR},
+      MOD_TIME = CURRENT_TIMESTAMP,
+      APP_SIZE = #{appSize,jdbcType=LONGVARCHAR}
+    where APP_ID = #{appId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qy.sp.manage.dto.TSdkApp" >
+    update t_sdk_app
+    set CP_ID = #{cpId,jdbcType=VARCHAR},
+      APP_NAME = #{appName,jdbcType=VARCHAR},
+      APP_PACKETNAME = #{appPacketname,jdbcType=VARCHAR},
+      APP_SIGIN = #{appSigin,jdbcType=VARCHAR},
+      APP_STATUS = #{appStatus,jdbcType=INTEGER},
+      APK_ID = #{apkId,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      MOD_TIME = #{modTime,jdbcType=TIMESTAMP}
+    where APP_ID = #{appId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateFileNameByPacketName" parameterType="com.qy.sp.manage.dto.TSdkApp" >
+    update t_sdk_app
+    set APK_ID = #{apkId,jdbcType=VARCHAR}
+    where APP_PACKETNAME = #{appPacketname,jdbcType=VARCHAR}
+  </update>  
+  
+</mapper>
