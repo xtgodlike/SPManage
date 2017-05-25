@@ -105,9 +105,11 @@ if (window != top)
        </form>
  
 </div>
+	<!--
     <div class="login_footer">
-    	<jsp:include page="foot.jsp" />
-  </div> 
+    	 <jsp:include page="foot.jsp" />
+  </div>
+  	-->
   </div>
 </body>
 </html>

@@ -6,7 +6,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>SP计费管理平台</title>
-<link rel="icon" href="<%=request.getContextPath()%>/images/title.ico" type="image/x-icon" />
+<!-- <link rel="icon" href="<%=request.getContextPath()%>/images/title.ico" type="image/x-icon" /> -->
 <link rel="stylesheet" type="text/css" href="../../css/easyui/default/easyui.css">
 <script type="text/javascript" src="../../js/jquery.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
@@ -62,9 +62,9 @@
     </script>
 </head>
 <body class="easyui-layout"  onload="openTab('1001','个人信息','<%=request.getContextPath()%>/basics/userCenter.do')">
-		<div data-options="region:'north',split:true" title="欢迎使用千雅SP计费管理平台!" style="height:70px;">
+		<div data-options="region:'north',split:true" title="欢迎使用计费管理平台!" style="height:70px;">
 			<div style="padding-top:5px;text-align:left;width: 50%;float: left;" >
-				<img src="<%=request.getContextPath()%>/images/qy_logo1.png"/>
+			<!--	<img src="<%=request.getContextPath()%>/images/qy_logo1.png"/> -->
 			</div>
 			<div style="padding-top:5px;text-align:right;width: 50%;float: right;" >
 	   		<span title="个人信息" onClick="openTab('1001','个人信息','<%=request.getContextPath()%>/basics/userCenter.do')" style="vertical-align: top;height:28px;line-height:28px;text-align: center;">
