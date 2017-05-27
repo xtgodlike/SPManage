@@ -8,7 +8,7 @@
 <meta http-equiv="cache-control" content="no-cache" /> 
 <meta http-equiv="expires" content="0" />
 <title>SP计费管理平台-登陆</title>
-<link rel="icon" href="<%=request.getContextPath()%>/images/title.ico" type="image/x-icon" />
+
 <link href="<%=request.getContextPath() %>/css/login.css" type="text/css" rel="stylesheet"/>
 <script src="<%=request.getContextPath()%>/js/common.js" type="text/javascript" language="javascript"></script>
 <script src="<%=request.getContextPath()%>/js/jquery.min.js" type="text/javascript" language="javascript"></script>
