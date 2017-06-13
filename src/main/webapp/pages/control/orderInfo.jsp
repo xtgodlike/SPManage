@@ -55,6 +55,11 @@ function showContent(trId) {
       					</div>
       				</td>
       			</tr>
+				<tr>
+					<td align="center">
+						<input class="defaultBut" type="button" onclick="javascript:history.go(-1);" value="返回" />
+					</td>
+				</tr>
 	     </table>
  	</div>
  </form>
