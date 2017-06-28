@@ -55,6 +55,13 @@ function showContent(trId) {
       					</div>
       				</td>
       			</tr>
+			<c:if test="${!empty order.orderId}">
+				<tr>
+					<td align="center">
+						<input class="defaultBut" type="button" onclick="javascript:history.go(-1);" value="返回" />
+					</td>
+				</tr>
+			</c:if>
 	     </table>
  	</div>
  </form>

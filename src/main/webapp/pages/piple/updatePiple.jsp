@@ -425,7 +425,7 @@
                 </td>
            </tr>
            <tr>
-                <td width="40%" align="right"><font color="FF0000">*</font>通道URL：</td>
+                <td width="40%" align="right">通道URL：</td>
                 <td width="30%" >
                    A:<input type="text" style="width: 250px;"  name="pipleUrlA" id="pipleUrlA" value="${piple.pipleUrlA}" /><div style="width: 200px;display: inline;" id="pipleUrlATip"></div>
                 </td>
@@ -434,7 +434,7 @@
                 </td>
            </tr>
            <tr>
-                <td width="40%" align="right"><font color="FF0000">*</font>回调URL：</td>
+                <td width="40%" align="right">回调URL：</td>
                 <td width="30%" >
                    A:<input type="text" style="width: 250px;" name="notifyUrlA" id="notifyUrlA" value="${piple.notifyUrlA}"/><div style="width: 200px;display: inline;" id="notifyUrlATip"></div>
                 </td>
@@ -443,7 +443,7 @@
                 </td>
            </tr>
            <tr>
-                <td width="40%" align="right"><font color="FF0000">*</font>通道授权：</td>
+                <td width="40%" align="right">通道授权：</td>
                 <td width="60%" colspan="2">
                    A:<input type="text" style="width: 250px;" name="pipleAuthA" id="pipleAuthA" value="${piple.pipleAuthA}"/><div style="width: 200px;display: inline;" id="pipleAuthATip"></div></br>
                    B:<input type="text" style="width: 250px;" name="pipleAuthB" id="pipleAuthB" value="${piple.pipleAuthB}"/><div style="width: 200px;display: inline;" id="pipleAuthBTip"></div></br>
