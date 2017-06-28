@@ -85,13 +85,13 @@
      <if test="order.provinceId != null  and order.provinceId != ''">
        AND o.PROVINCE_ID = #{order.provinceId,jdbcType=INTEGER}
     </if>
-    <if test="order.orderStatus != null and order.orderStatus != ''">
+    <if test="order.orderStatus != null">
        AND o.ORDER_STATUS = #{order.orderStatus,jdbcType=INTEGER}
     </if>
-    <if test="order.subStatus != null and order.subStatus != ''">
+    <if test="order.subStatus != null">
        AND o.SUB_STATUS = #{order.subStatus,jdbcType=INTEGER}
     </if>
-    <if test="order.decStatus != null and order.decStatus != ''">
+    <if test="order.decStatus != null">
        AND o.DEC_STATUS = #{order.decStatus,jdbcType=INTEGER}
     </if>
      <if test=" pipleIds!=null">

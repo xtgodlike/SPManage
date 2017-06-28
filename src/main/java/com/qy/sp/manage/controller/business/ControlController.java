@@ -217,7 +217,7 @@ public class ControlController extends BaseController{
 				map.put("amount", o.getAmount()+"");
 				map.put("resultCode", StringUtil.isEmptyString(o.getResultCode())?"无":o.getResultCode());
 				map.put("orderStatusDesc", Global.OrderStatusDesc.message.get(o.getOrderStatus()));
-				map.put("subStatusDesc", Global.OrderStatusDesc.message.get(o.getSubStatus()));
+				map.put("subStatusDesc", Global.SubStatusDesc.message.get(o.getSubStatus()));
 				map.put("decStatusDesc", Global.ShiftStatusDesc.message.get(o.getDecStatus()));
 				map.put("createTimeString", DateTimeUtils.formatTime(o.getCreateTime(), DateTimeUtils.yyyyMMddHHmmss));
 				map.put("completeTimeString", o.getCompleteTime()==null?"无":DateTimeUtils.formatTime(o.getCompleteTime(), DateTimeUtils.yyyyMMddHHmmss));
