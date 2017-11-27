@@ -394,9 +394,9 @@ public class PipleController extends BaseController{
 	@RequestMapping(value = "/toAddChannelPiple.do")
 	public String toAddChannelPiple(HttpServletRequest request) throws Exception{
 		String pipleId = request.getParameter("pipleId");
-//		UserSession uSession = (UserSession) request.getSession().getAttribute(Global.U_SESSION);
-//		List<TChannel> channels = channelService.getChannelsByUserId(uSession.getUserId());
-		List<TChannel> channels =channelService.getAllChannels();
+		UserSession uSession = (UserSession) request.getSession().getAttribute(Global.U_SESSION);
+		List<TChannel> channels = channelService.getChannelsByUserId(uSession.getUserId());
+//		List<TChannel> channels =channelService.getAllChannels();
 		request.setAttribute("pipleId", pipleId);
 		request.setAttribute("channels", channels);
 		return "/piple/updatePipleChannel";

@@ -162,7 +162,7 @@ function toAddPiple(){
                 <td>${p.calcTypeDesc}</td>
                 <td>	
 					<c:if test="${p.settlementRatio==0}">未设置</c:if>
-					<c:if test="${p.settlementRatio!=0}">${p.settlementRatio*100 }%</c:if>
+					<c:if test="${p.settlementRatio!=0}"><fmt:formatNumber value="${p.settlementRatio*100}" type="currency" pattern="#0.00"/>%</c:if>
                 </td>
                 <td>${p.codeTypeDesc}</td>
                 <td >
