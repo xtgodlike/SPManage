@@ -111,7 +111,7 @@ function showContent(trId) {
                 </td>
                 <td align="right" width="10%">通道订单号：</td>
                 <td width="10%">
-                   <input type="text" id="pipleOrderId" name="pipleOrderId" value="${pipleOrderId}" maxlength="50"  style="width: 170px;"/>
+                   <input type="text" id="pipleOrderId" name="pipleOrderId" value="${pipleOrderId}" maxlength="100"  style="width: 170px;"/>
                 </td>
             	<td align="right"  width="10%">手机号：</td>
                 <td width="10%">
@@ -188,6 +188,7 @@ function showContent(trId) {
                 		<option value="16" <c:if test="${order.subStatus==16}">selected="selected"</c:if>>发送短信指令失败</option>
                 		<option value="3" <c:if test="${order.subStatus==3}">selected="selected"</c:if>>支付成功</option>
                 		<option value="4" <c:if test="${order.subStatus==4}">selected="selected"</c:if>>支付失败</option>
+					   <option value="41" <c:if test="${order.subStatus==41}">selected="selected"</c:if>>包月退订</option>
                    </select>
                 </td>
                 <td align="right">扣量状态：</td>
@@ -274,6 +275,7 @@ function showContent(trId) {
                 		<c:when test="${o.subStatus==16}">发送短信指令失败</c:when>
                 		<c:when test="${o.subStatus==3}">支付成功</c:when>
                 		<c:when test="${o.subStatus==4}">支付失败</c:when>
+						 <c:when test="${o.subStatus==41}">包月退订</c:when>
                 	</c:choose>
 				</td>
 				<td>
